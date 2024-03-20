@@ -22,6 +22,6 @@
 * As an administrator, I want the capability to delete user accounts.
 
 <p align="center">
-  <img src="https://github.com/stoineamiruna/MDS/blob/main/MDS%20(1).jpg" alt="User Stories Diagram">
+  <img src="https://github.com/stoineamiruna/MDS/blob/main/MDS%20(2).jpg" alt="User Stories Diagram">
 </p>
 
