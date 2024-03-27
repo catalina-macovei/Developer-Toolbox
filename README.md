@@ -21,14 +21,18 @@
 * As an administrator, I want to manage user roles and account details.
 * As an administrator, I want the capability to delete user accounts.
 
+
+## UML Diagram:
 <p align="center">
   <img src="https://github.com/stoineamiruna/MDS/blob/main/MDS%20(2).jpg" alt="User Stories Diagram">
 </p>
 
+## Gantt Chart:
 <p align="center">
   <img src="wwwroot\imgs\Gantt.svg" alt="Gantt Chart">
 </p>
 
+## Workflow Diagram:
 <p align="center">
   <img src="wwwroot\imgs\Workflow.svg" alt="Workflow Diagram">
 </p>
