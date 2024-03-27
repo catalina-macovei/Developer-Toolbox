@@ -29,3 +29,7 @@
   <img src="wwwroot\imgs\Gantt.svg" alt="Gantt Chart">
 </p>
 
+<p align="center">
+  <img src="wwwroot\imgs\Workflow.svg" alt="Workflow Diagram">
+</p>
+
