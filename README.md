@@ -25,3 +25,7 @@
   <img src="https://github.com/stoineamiruna/MDS/blob/main/MDS%20(2).jpg" alt="User Stories Diagram">
 </p>
 
+<p align="center">
+  <img src="wwwroot\imgs\Gantt.svg" alt="Gantt Chart">
+</p>
+
