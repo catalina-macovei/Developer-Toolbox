@@ -37,3 +37,8 @@
   <img src="wwwroot\imgs\Workflow.svg" alt="Workflow Diagram">
 </p>
 
+## Entity Relationship Diagram:
+<p align="center">
+  <img src="wwwroot\imgs\ERD.svg" alt="Workflow Diagram">
+</p>
+
