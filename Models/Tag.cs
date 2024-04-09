@@ -8,5 +8,6 @@ namespace Developer_Toolbox.Models
         public int Id { get; set; }
         public virtual ICollection<QuestionTag>? QuestionTags { get; set; }
         public string Name { get; set; }
+
     }
 }

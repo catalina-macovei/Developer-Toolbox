@@ -6,7 +6,12 @@ namespace Developer_Toolbox.Models
     {
         [Key]
         public int Id { get; set; }
+        public int? Score { get; set; }
+        public int? ExerciseId { get; set; }
+        public virtual Exercise? Exercise { get; set; }
 
-        public virtual ICollection<Exercise>? Exercises { get; set; }
+        public string? UserId { get; set; }
+        public virtual ApplicationUser? User { get; set; }
+
     }
 }
