@@ -92,7 +92,7 @@ namespace Developer_Toolbox.Controllers
         public ActionResult Delete(int id)
         {
             //find the tag object to be deleted
-            Tag tag = db.Tags.Include("QuestionTags").Include("Questions").Where(c => c.Id == id).First();
+            Tag tag = db.Tags.Include("QuestionTags").Where(c => c.Id == id).First();
 
             //delete it from the database
             db.Tags.Remove(tag);
