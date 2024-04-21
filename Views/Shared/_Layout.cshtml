@@ -10,9 +10,9 @@
 </head>
 <body>
     <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow">
+        <nav class="pb-3 navbar navbar-expand-sm navbar-toggleable-sm navbar-light box-shadow bg-primary " style="padding-top:25px!important;" >
             <div class="container-fluid">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">Developer_Toolbox</a>
+                <a class="navbar-brand text-white" style="font-weight:bold;" asp-area="" asp-controller="Home" asp-action="Index">Developer Toolbox</a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
                         aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
@@ -20,16 +20,13 @@
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
                     <ul class="navbar-nav flex-grow-1">
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+                            <a class="nav-link text-white" style="font-weight:bold;" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+                            <a class="nav-link text-white" style="font-weight:bold;" asp-area="" asp-controller="Tags" asp-action="Index">Tags</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Tags" asp-action="Index">Tags</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Solutions" asp-action="Index">Solutions</a>
+                            <a class="nav-link text-white" style="font-weight:bold;" asp-area="" asp-controller="Solutions" asp-action="Index">Solutions</a>
                         </li>
                     </ul>
                     <partial name="_LoginPartial" />
@@ -43,7 +40,7 @@
         </main>
     </div>
 
-    <footer class="border-top footer text-muted">
+    <footer class="border-top footer text-muted text-center pt-2">
         <div class="">
             &copy; 2024 - Developer_Toolbox - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
         </div>
