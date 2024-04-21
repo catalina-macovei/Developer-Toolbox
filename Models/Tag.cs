@@ -7,7 +7,9 @@ namespace Developer_Toolbox.Models
         [Key]
         public int Id { get; set; }
         public virtual ICollection<QuestionTag>? QuestionTags { get; set; }
-        public string Name { get; set; }
+
+        [Required(ErrorMessage ="The name field is required!")]
+        public string? Name { get; set; }
 
     }
 }
