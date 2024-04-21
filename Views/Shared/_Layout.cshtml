@@ -10,7 +10,7 @@
 </head>
 <body>
     <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
+        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow">
             <div class="container-fluid">
                 <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">Developer_Toolbox</a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
@@ -37,14 +37,14 @@
             </div>
         </nav>
     </header>
-    <div class="container" style="height:80vh">
+    <div class="overflow-hidden min-vh-100">
         <main role="main" class="pb-3">
             @RenderBody()
         </main>
     </div>
 
-    <footer class="border-top footer text-muted" style="margin-bottom: 0 !important; position: sticky; bottom: 0;">
-        <div class="container">
+    <footer class="border-top footer text-muted">
+        <div class="">
             &copy; 2024 - Developer_Toolbox - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
         </div>
     </footer>
