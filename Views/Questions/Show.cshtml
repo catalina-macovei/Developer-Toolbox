@@ -1,0 +1,138 @@
+﻿<div class="container">
+    <div class="d-flex justify-content-start flex-row mt-10">
+
+        <a class="btn btn-outline-success" href="/Questions/Index/">
+              <i class="bi bi-arrow-return-left"></i> Back to questions
+        </a>
+
+        <div class="ms-auto">
+            @*<i class="bi bi-person"></i> <i>@ViewBag.Question.User.UserName</i>*@
+        </div>
+
+    </div>
+    @if (TempData["message"] != null)
+    {
+        <br />
+        <div class="alert p-3 rounded-3 text-center mb-5 @ViewBag.Alert">
+            @ViewBag.Message
+        </div>
+    }
+    <br />
+    <br />
+    <div class="row">
+
+        <div>
+
+            <div class="card">
+                <!-- Partea de întrebare -->
+                <div class="card-body">
+                    @*
+                    <a href="/Users/Show/@ViewBag.User.Id" style="text-decoration: none;">
+                        <h3 class="card-title alert-success py-3 px-3 rounded-2">@ViewBag.User.FirstName @ViewBag.User.LastName</h3>
+                    </a>
+                    *@
+                    <div class="card-text">@ViewBag.Question.Title</div>
+                    <div class="card-text">@ViewBag.Question.Description</div>
+                    <br /><br />
+
+                    <div class="d-flex flex-row mt-5" style="margin-bottom:0">
+                        <span class="alert-success">@ViewBag.Question.CreatedDate</span>
+                    </div>
+                    
+                    <div class="d-flex flex-row justify-content-end">
+                        @if (@ViewBag.Question.UserId == ViewBag.UserCurent || ViewBag.EsteAdmin || true)
+                        {
+                            <a class="btn btn-success sirbutoane" href="/Questions/Edit/@ViewBag.Question.Id">Edit</a>
+                            <a class="btn btn-danger sirbutoane" href="/Questions/Delete/@ViewBag.Question.Id">Delete</a>
+                            if(ViewBag.Saved == false)
+                            {
+                                <a class="btn btn-secondary sirbutoane" href="/Bookmarks/Save?questionId=@ViewBag.Question.Id">Save</a>
+                            }
+                            else
+                            {
+                                <a class="btn btn-secondary sirbutoane" href="/Bookmarks/Unsave?questionId=@ViewBag.Question.Id">Unsave</a>
+                            }
+
+                        }
+                    </div>
+
+                    <div class="d-flex flex-row justify-content-end mt-3">
+                        <!-- Buton pentru like -->
+                        <form method="post" action="/Questions/LikeQuestion?questionId=@ViewBag.Question.Id">
+                            <button type="submit" class="btn btn-primary mr-2">Like @ViewBag.Question.LikesNr</button>
+                        </form>
+
+                        <!-- Buton pentru dislike -->
+                        <form method="post" action="/Questions/DislikeQuestion?questionId=@ViewBag.Question.Id">
+                            <button type="submit" class="btn btn-danger">Dislike @ViewBag.Question.DislikesNr</button>
+                        </form>
+                    </div>
+                    
+                </div>
+
+
+            </div>
+
+            <br />
+            <br />
+
+            <div class="card">
+                <!-- Raspunsuri -->
+                @foreach (var comm in ViewBag.QuestionWithAnswers)
+                {
+                    <div>
+                        <div class="card-body">
+                            @*
+                            <a style="text-decoration: none;">
+                                <h6>@comm.AutorFirstName @comm.AutorLastName</h6>
+                            </a>
+                            *@
+                            <div>
+                                <p>@comm.Answer.Content</p>
+
+                            </div>
+
+                            <div class="d-flex">
+
+                                <small class="alert-success px-1" style="margin-top: auto">@comm.Answer.Date</small>
+                                @*
+                                @if (@comm.Answer.UserId == ViewBag.UserCurent || ViewBag.EsteAdmin)
+                                {*@
+                                    <div class="d-flex" style="margin-left: auto;">
+                                        <div>
+                                            <a class="btn btn-outline-primary" href="/Answers/Edit/@comm.Answer.Id"><i class="bi bi-pencil-square"></i>Edit</a>
+                                        </div>
+                                        <div>
+                                            <form method="post" action="/Answers/Delete/@comm.Answer.Id">
+                                                <button class="btn btn-outline-danger" type="submit"><i class="bi bi-trash"></i>Delete</button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                @*}
+                                *@
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+            <!-- Formular adaugare comentariu -->
+            <div class="card mt-3">
+                <form method="post" action="/Answers/New">
+                    <div class="card-body">
+                        <input type="hidden" name="QuestionId" value="@ViewBag.Question.Id" />
+                        <label>Content</label>
+                        <br />
+                        <textarea class="form-control" name="Content"></textarea>
+                        <br />
+                        <button class="btn btn-success" type="submit">Answer</button>
+                    </div>
+                </form>
+            </div>
+
+        </div>
+
+        <div class="col-md-2"></div>
+
+    </div>
+
+</div>

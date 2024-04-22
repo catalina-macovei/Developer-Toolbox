@@ -1,0 +1,159 @@
+﻿@{
+    ViewBag.Title = "Index";
+}
+<br />
+<br />
+<h2 class="text-center">Questions</h2>
+
+
+@if (TempData["message"] != null)
+{
+    <div class="alert p-3 rounded-3 text-center mb-5 @ViewBag.Alert">
+        @ViewBag.Message
+    </div>
+}
+
+@* Motorul de cautare *@
+<form method="GET">
+    <div class="input-group mb-3">
+        <input type="text" class="form-control" placeholder="Search topics or keywords" name="search"
+               value="@ViewBag.SearchString">
+        <button class="btn btn-outline-success" type="submit">Search</button>
+    </div>
+</form>
+
+@if (ViewBag.AreProfil==true || true)
+{
+    <br />
+    <br />
+    <!-- Formular adaugare întrebare -->
+    <div class="card formpost">
+
+
+        <form method="post" action="/Questions/New">
+
+            <div class="card-body">
+                <h4>Ask a new question</h4>
+                <br />
+
+                <div class="row">
+                    <label>Title</label>
+                    <input class="form-control" name="Title"></input>
+                </div>
+
+                <div class="row">
+                    <label>Description</label>
+                    <textarea class="form-control" name="Description"></textarea>
+                </div>
+
+                <br /><br />
+
+                <button class="btn btn-success" type="submit">Post</button>
+
+            </div>
+
+        </form>
+
+    </div>
+}
+<br />
+<hr />
+@*
+@foreach (var item in ViewBag.QuestionsWithAutor)
+{
+    <div class="card ">
+
+        <div class="card-body">
+
+            <a href="/ApplicationUsers/Show/@item.AutorId" style="text-decoration: none;">
+                <h3 class="card-title alert-success py-3 px-3 rounded-2">@item.AutorFirstName @item.AutorLastName</h3>
+            </a>
+            <div class="card-text">@item.Question.Title</div>
+
+            <div class="card-text">@item.Question.Description</div>
+            <br /> <br />
+           
+
+            <div class="d-flex justify-content-between flex-row mt-5">
+
+
+                 <span class="alert-success px-1 align-content-center">@item.Question.CreatedDat</span>
+
+                    <div class="d-flex flex-row justify-content-end">
+                        <a class="btn btn-success sirbutoane" href="/Questions/Show/@item.Question.Id">Afișează întrebare</a>
+                        @if (@item.Post.UserId == ViewBag.UserCurent || ViewBag.EsteAdmin)
+                        {
+                            <a class="btn btn-secondary sirbutoane" href="/Questions/Edit/@item.Post.Id">Editează întrebare</a>
+                            <a class="btn btn-danger sirbutoane" href="/Questions/Delete/@item.Post.Id">Șterge întrebare</a>
+                        }
+                    </div>
+
+                </div>
+
+        </div>
+
+    </div>
+
+    <br />
+    <br />
+
+}*@
+
+@foreach (var item in ViewBag.Questions)
+{
+    <div class="card ">
+
+        <div class="card-body">
+
+            <div class="card-text">@item.Title</div>
+
+            <div class="card-text">@item.Description</div>
+            <br /> <br />
+
+
+            <div class="d-flex justify-content-between flex-row mt-5">
+
+
+                <span class="alert-success px-1 align-content-center">@item.CreatedDate</span>
+
+                <div class="d-flex flex-row justify-content-end">
+                    <a class="btn btn-success sirbutoane" href="/Questions/Show/@item.Id">See question</a>
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <br />
+    <br />
+
+}
+
+@* Afisarea paginata a articolelor *@
+
+<div>
+    <nav aria-label="Page navigation example">
+        <ul class="pagination">
+            <li class="page-item">
+                <a class="page-link" href="@ViewBag.PaginationBaseUrl=1" aria-label="Previous">
+                    <span aria-hidden="true">&laquo;</span>
+                </a>
+            </li>
+
+            @for (int i = 1; i <= ViewBag.lastPage; i++)
+            {
+                <li class="page-item"> <a class="page-link" href="@ViewBag.PaginationBaseUrl=@i">@(i)</a> </li>
+            }
+
+            <li class="page-item">
+                <a class="page-link" href="@ViewBag.PaginationBaseUrl=@(ViewBag.lastPage)" aria-label="Next">
+                    <span aria-hidden="true">&raquo;</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</div>
+
+</div>
