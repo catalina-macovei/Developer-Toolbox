@@ -1,0 +1,32 @@
+﻿
+<section style="background-color: white;">
+    @if (TempData.ContainsKey("message"))
+    {
+
+        <h4 class="alert-success p-3 rounded-3 text-center mb-5">@ViewBag.Message</h4>
+    }
+
+    <h4><strong>Categories</strong></h4>
+
+    <a class="btn btn-outline" style="background-color: #eee; color:black;" href="/Categories/New" role="button">Add Category</a>
+    <div>
+        @foreach (var category in ViewBag.Categories)
+        {
+            <div class="media">
+                <img src="@category.Logo" class="align-self-center mr-3" style="max-width:40px" />
+                <div class="media-body">
+                    <h5 class="mt-0">@category.CategoryName</h5>
+                   
+                    @*Doar pentru moderatori si admini*@
+                    <a asp-action="Show" asp-controller="Categories" asp-route-id="@category.Id" style="color: black">
+                        View Category
+                    </a>
+                    <a asp-action="Index" asp-controller="Exercises" asp-route-id="@category.Id" style="color: black">
+                        View Exercises
+                    </a>
+                </div>
+            </div>
+        }
+
+    </div>
+</section>

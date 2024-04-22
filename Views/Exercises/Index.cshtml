@@ -1,0 +1,62 @@
+﻿@if (TempData.ContainsKey("message"))
+{
+    <h4 class="alert-success p-3 rounded-3 text-center mb-5">@ViewBag.Message</h4>
+}
+
+<h4><strong>Exercises</strong></h4>
+<a class="btn btn-outline" style="background-color: #eee; color:black;" href="/Exercises/New" role="button">Add Exercise</a>
+
+<div class="d-flex flex-column gap-1">
+    <form method="GET" class="" id="filterForm">
+        <div class="input-group ">
+            <input type="text" class="form-control" placeholder="Search products" name="search" value="@ViewBag.SearchString">
+            <button class="btn" type="submit" style="background-color:pink">
+                Search
+            </button>
+        </div>
+        <div class="d-flex gap-1 justify-content-start mt-2">
+            <label>Sort by difficulty:</label>
+            @Html.DropDownList(
+            "SelectedDifficultyOption",
+            (IEnumerable<SelectListItem>)ViewBag.DifficultyOptionsSelectList,
+            "Select",
+            new { @class = "form-control" }
+            )
+        </div>
+    </form>
+</div>
+
+<div class="row text-center mx-auto">
+    @foreach(Exercise ex in ViewBag.Exercises)
+    {
+        <div class="col-lg-4 col-md-6 mb-4">
+            <a asp-action="Show" asp-controller="Exercises" asp-route-id="@ex.Id" style="color: black">
+                <h5 class="card-title mb-3">@ex.Title</h5>
+                <a href="#" class="badge badge-success">Success</a>
+                @*status*@
+                <p>@ex.Summary</p>
+            </a>
+        </div>
+    }
+</div>
+
+<div class=" mb-2 ">
+    <nav aria-label="Page navigation" style="color:pink">
+        <ul class="pagination">
+            <li class="page-item">
+                <a class="page-link" style="color:pink" href="/Exercises/Index/@ViewBag.CategoryId?page=1&@ViewBag.QueryString" aria-label="Previous">
+                    <span aria-hidden="true">&laquo;</span>
+                </a>
+            </li>
+            @for (int i = 1; i <= ViewBag.lastPage; i++)
+            {
+                <li class="page-item"> <a class="page-link" style="color:pink" href="/Exercises/Index/@ViewBag.CategoryId?page=@i&@ViewBag.QueryString">@(i)</a> </li>
+            }
+            <li class="page-item">
+                <a class="page-link" style="color:pink" href="/Exercises/Index/@ViewBag.CategoryId?page=@(ViewBag.lastPage)&@ViewBag.QueryString" aria-label="Next">
+                    <span aria-hidden="true">&raquo;</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</div>

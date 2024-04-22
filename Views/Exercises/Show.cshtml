@@ -1,0 +1,57 @@
+﻿@model Developer_Toolbox.Models.Exercise
+
+<section class="d-flex gap-2">
+    <div class="w-50 m-5">
+        <div class="card product">
+            <div class="bg-image hover-zoom ripple" data-mdb-ripple-color="light">
+                <div>
+                    <div class="hover-overlay">
+                        <div class="mask" style="background-color: rgba(251, 251, 251, 0.15);"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card-body">
+                <div href="" class="text-reset">
+                    <h5 class="card-title mb-3">@Model.Title</h5>
+                </div>
+
+                <div>
+                    <h6>@Model.Category.CategoryName</h6>
+                    <h6><small>Posted on: @Model.Date</small></h6>
+                    @*<h6><small>Posted by: @Model.User.FirstName @Model.User.LastName</small></h6>*@
+                </div>
+
+                <div>
+                    <h6>Instructions</h6>
+                    <p>@Model.Description</p>
+                </div>
+
+                <div>
+                    <h6>Restrictions</h6>
+                    <div class="card-text">@Html.Raw(Model.Restrictions)</div>
+                </div>
+
+                <div>
+                    <h6>Examples</h6>
+                    <div class="card-text">@Html.Raw(Model.Examples)</div>
+                </div>
+
+            </div>
+            <div class="d-flex align-items-center justify-content-between m-2">
+
+                <a class="btn alert-success" href="/Exercises/Edit/@Model.Id">Edit Exercise</a>
+
+                <form method="post" action="/Exercises/Delete/@Model.Id">
+
+                    <button class="btn btn-danger" type="submit">Delete Exercise</button>
+
+                </form>
+
+            </div>
+
+        </div>
+
+
+    </div>
+</section>
