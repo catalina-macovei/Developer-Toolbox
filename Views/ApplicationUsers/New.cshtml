@@ -1,0 +1,46 @@
+﻿@model Developer_Toolbox.Models.ApplicationUser
+
+@{
+    ViewBag.Title = "New";
+}
+
+<br />
+<h2>Make your profile!</h2>
+<hr />
+
+
+@using (Html.BeginForm(actionName: "New", controllerName: "ApplicationUsers", method: FormMethod.Post))
+{
+    <div class="row mb-3">
+        <b>
+            @Html.Label("FirstName", "First Name") </b>
+        <div class="col-sm-3">
+            @Html.TextBox("FirstName", null, new { @class = "form-control" })
+            @*@Html.ValidationMessage("FirstName", null, new { @class = "text-danger" })*@
+        </div>
+    </div>
+
+    <div class="row mb-3">
+        <b>
+            @Html.Label("LastName", "Last Name") </b>
+        <div class="col-sm-3">
+            @Html.TextBox("LastName", null, new { @class = "form-control" })
+            @*@Html.ValidationMessage("LastName", null, new { @class = "text-danger" })*@
+        </div>
+    </div>
+
+    <div class="row mb-3">
+        <b>
+            @Html.Label("Description", "Description") </b>
+        <div class="col-sm-5">
+            @Html.TextArea("Description", null, new { @class = "form-control" })
+            @*@Html.ValidationMessage("Bio", null, new { @class = "text-danger" })*@
+        </div>
+    </div>
+
+
+    <br />
+
+    <span style="color: white;">aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa</span>
+    <button class="btn btn-success" type="submit">Create my profile</button>
+}

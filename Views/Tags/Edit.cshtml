@@ -1,0 +1,29 @@
+﻿@model Developer_Toolbox.Models.Tag
+
+
+<div class="container py-5">
+    <h2 class="text-center">Edit Tag</h2>
+
+    <div class="row">
+        <div class="col-6 offset-3">
+            <form class="d-flex flex-column gap-3 overflow-auto" method="post" action="/Tags/Edit/@Model.Id">
+                <div>
+                    @Html.Label("Name", "Tag Name")
+
+                    @Html.TextBox("Name", null, new { @class = "form-control" })
+
+                    @Html.ValidationMessageFor(m => m.Name, null, new{@class = "text-danger"})
+                </div>
+                <button class="btn btn-outline" style="background-color:pink; color:black;" type="submit">Edit Tag</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+
+
