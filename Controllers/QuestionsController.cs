@@ -210,8 +210,8 @@ namespace Developer_Toolbox.Controllers
 
                 db.Questions.Add(question);
 
-                TempData["message"] = "Întrebarea a fost adăugată cu succes";
-                TempData["messageType"] = "alert-success";
+                TempData["message"] = "The question has been successfully added.";
+                TempData["messageType"] = "alert-primary";
 
                 db.SaveChanges();
 
@@ -220,6 +220,14 @@ namespace Developer_Toolbox.Controllers
             }
             catch (Exception)
             {
+                if(question.Description == null)
+                    TempData["message"] = "The description field is required!";
+                if(question.Title == null)
+                    TempData["message"] = "The title field is required!";
+                if (question.Title.Length > 100)
+                    TempData["message"] = "The title cannot exceed 100 characters";
+                if (question.Title.Length < 5)
+                    TempData["message"] = "The title must be at least 5 characters long";
                 var refererUrl = Request.Headers["Referer"].ToString();
                 return Redirect(refererUrl);
             }
@@ -246,8 +254,8 @@ namespace Developer_Toolbox.Controllers
                 question.Description = requestQuestion.Description;
 
                 db.SaveChanges();
-                TempData["message"] = "Întrebarea a fost editată cu succes";
-                TempData["messageType"] = "alert-success";
+                TempData["message"] = "The question has been successfully edited.";
+                TempData["messageType"] = "alert-primary";
 
                 return Redirect("/Questions/Index");
                
@@ -271,8 +279,8 @@ namespace Developer_Toolbox.Controllers
             db.Bookmarks.RemoveRange(bookmarks);
 
             db.Questions.Remove(question);
-            TempData["message"] = "Întrebarea a fost ștearsă cu succes";
-            TempData["messageType"] = "alert-success";
+            TempData["message"] = "The question has been successfully deleted.";
+            TempData["messageType"] = "alert-primary";
             db.SaveChanges();
 
             return RedirectToAction("Index");

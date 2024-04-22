@@ -42,8 +42,8 @@ namespace Developer_Toolbox.Controllers
                 // Adaugă o nouă înregistrare în tabela Bookmark
                 Console.WriteLine("Acesta e id-ul preluat: " + questionId);
                 var bookmark = new Bookmark { UserId = userId, QuestionId = questionId };
-                TempData["message"] = "Întrebarea s-a salvat cu succes!";
-                TempData["messageType"] = "alert-success";
+                TempData["message"] = "The question has been successfully saved!";
+                TempData["messageType"] = "alert-primary";
                 db.Bookmarks.Add(bookmark);
                 db.SaveChanges();
             }
@@ -63,8 +63,8 @@ namespace Developer_Toolbox.Controllers
                 .Where(b => b.UserId == "066215bd-686b-4fdf-b047-ec77c473e43b" && b.QuestionId == questionId).First();
             db.Bookmarks.Remove(bookmark);
             db.SaveChanges();
-            TempData["message"] = "Ai șters întrebarea din lista de întrebări salvate.";
-            TempData["messageType"] = "alert-success";
+            TempData["message"] = "You have removed the question from the saved questions list.";
+            TempData["messageType"] = "alert-primary";
             return Redirect("/Questions/Show/" + questionId);
         }
 
