@@ -15,15 +15,14 @@
                     @Html.ValidationMessageFor(m => m.CategoryName, null, new{@class = "text-danger"})
 
                     <div>
-                        <div>
-                            <label for="file">Upload Logo</label>
-                            <input type="file" id="file" name="file" />
-                            @Html.ValidationMessage("Logo", null, new { @class = "text-danger" })
-                        </div>
+                        <label for="file">Upload Logo</label>
+                        <input type="file" id="file" name="file" style="margin:1em"/>
+                        <br/>
+                        @Html.ValidationMessage("Logo", null, new { @class = "text-danger" })
                     </div>
 
                 </div>
-                <button class="btn btn-outline" style="background-color:pink; color:black;" type="submit">Edit Category</button>
+                <button class="btn btn-outline" style="background-color:#0d6efd; color:white;" type="submit">Save changes</button>
             </form>
         </div>
     </div>
