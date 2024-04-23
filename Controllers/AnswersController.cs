@@ -9,15 +9,15 @@ namespace Developer_Toolbox.Controllers
     {
         private readonly ApplicationDbContext db;
 
-        //private readonly UserManager<ApplicationUser> _userManager;
-        //private readonly RoleManager<IdentityRole> _roleManager;
-        public AnswersController(ApplicationDbContext context)
-            //,UserManager<ApplicationUser> userManager,
-            //RoleManager<IdentityRole> roleManager)
+        private readonly UserManager<ApplicationUser> _userManager;
+        private readonly RoleManager<IdentityRole> _roleManager;
+        public AnswersController(ApplicationDbContext context,
+            UserManager<ApplicationUser> userManager,
+            RoleManager<IdentityRole> roleManager)
         {
             db = context;
-            //_userManager = userManager;
-            //_roleManager = roleManager;
+            _userManager = userManager;
+            _roleManager = roleManager;
         }
 
         private void SetAccessRights()
@@ -25,9 +25,9 @@ namespace Developer_Toolbox.Controllers
             ViewBag.AfisareButoane = false;
 
 
-            //ViewBag.EsteAdmin = User.IsInRole("Admin");
+            ViewBag.EsteAdmin = User.IsInRole("Admin");
 
-            //ViewBag.UserCurent = _userManager.GetUserId(User);
+            ViewBag.UserCurent = _userManager.GetUserId(User);
         }
 
 
@@ -41,12 +41,12 @@ namespace Developer_Toolbox.Controllers
                 // Dacă utilizatorul nu este autentificat, direcționează-l către pagina de înregistrare
                 return Redirect("/Identity/Account/Login");
             }
-            //ApplicationUser user = db.ApplicationUsers.Where(user => user.Id == _userManager.GetUserId(User)).FirstOrDefault();
-            /*
+            ApplicationUser user = db.ApplicationUsers.Where(user => user.Id == _userManager.GetUserId(User)).FirstOrDefault();
+            
             if (user == null)
                 return Redirect("/ApplicationUsers/New");
             answ.UserId = _userManager.GetUserId(User);
-            */
+            
             try
             {
                 db.Answers.Add(answ);
@@ -65,7 +65,7 @@ namespace Developer_Toolbox.Controllers
         [HttpPost]
         public IActionResult Delete(int id)
         {
-            //SetAccessRights();
+            SetAccessRights();
             Answer answ = db.Answers.Find(id);
             db.Answers.Remove(answ);
             db.SaveChanges();
@@ -76,7 +76,7 @@ namespace Developer_Toolbox.Controllers
 
         public IActionResult Edit(int id)
         {
-            //SetAccessRights();
+            SetAccessRights();
             Answer answ = db.Answers.Find(id);
             ViewBag.Answer = answ;
             return View();

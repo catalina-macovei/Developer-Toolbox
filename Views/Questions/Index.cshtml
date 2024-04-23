@@ -26,7 +26,7 @@
 
 
 
-@if (ViewBag.AreProfil==true || true)
+@if (ViewBag.UserCurent!=null)
 {
     <br />
     <br />
@@ -37,8 +37,7 @@
         <form method="post" action="/Questions/New">
 
             <div class="card-body">
-                <div class="box-shadow bg-primary row"><h3 style="color:white">Ask a new question</h3></div>
-                <br />
+                <div class="box-shadow bg-primary row py-2 px-3 rounded-2"><h3 style="color:white">Ask a new question</h3></div>
 
                 <div class="row">
                     <label>Title</label>
@@ -50,7 +49,7 @@
                     <textarea class="form-control border-primary" name="Description"></textarea>
                 </div>
 
-                <br /><br />
+                <br />
 
                 <button class="btn btn-primary px-3 rounded-pill mb-3" type="submit">Post</button>
 
@@ -62,37 +61,25 @@
 }
 <br />
 <hr />
-@*
+
 @foreach (var item in ViewBag.QuestionsWithAutor)
 {
     <div class="card ">
 
         <div class="card-body">
-
             <a href="/ApplicationUsers/Show/@item.AutorId" style="text-decoration: none;">
-                <h3 class="card-title alert-success py-3 px-3 rounded-2">@item.AutorFirstName @item.AutorLastName</h3>
+                <h3 class="card-title alert-primary py-3 px-3 rounded-2">@item.AutorFirstName @item.AutorLastName</h3>
             </a>
-            <div class="card-text">@item.Question.Title</div>
-
-            <div class="card-text">@item.Question.Description</div>
+            <div class="card-title"> <h3>@item.Question.Title </h3></div>
             <br /> <br />
            
+            <div class="d-flex justify-content-between align-items-start flex-row mt-3">
+                <small class="alert-secondary">@item.Question.CreatedDate</small>
 
-            <div class="d-flex justify-content-between flex-row mt-5">
-
-
-                 <span class="alert-success px-1 align-content-center">@item.Question.CreatedDat</span>
-
-                    <div class="d-flex flex-row justify-content-end">
-                        <a class="btn btn-success sirbutoane" href="/Questions/Show/@item.Question.Id">Afișează întrebare</a>
-                        @if (@item.Post.UserId == ViewBag.UserCurent || ViewBag.EsteAdmin)
-                        {
-                            <a class="btn btn-secondary sirbutoane" href="/Questions/Edit/@item.Post.Id">Editează întrebare</a>
-                            <a class="btn btn-danger sirbutoane" href="/Questions/Delete/@item.Post.Id">Șterge întrebare</a>
-                        }
-                    </div>
-
+                <div class="d-flex flex-row justify-content-end">
+                    <a class="btn btn-outline-primary px-3 rounded-pill mb-3" href="/Questions/Show/@item.Question.Id">See question</a>
                 </div>
+            </div>
 
         </div>
 
@@ -101,8 +88,8 @@
     <br />
     <br />
 
-}*@
-
+}
+@*
 @foreach (var item in ViewBag.Questions)
 {
     <div class="card ">
@@ -128,6 +115,7 @@
     <br />
 
 }
+*@
 
 @* Afisarea paginata a articolelor *@
 

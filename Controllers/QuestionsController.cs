@@ -13,17 +13,16 @@ namespace Developer_Toolbox.Controllers
     {
 
         private readonly ApplicationDbContext db;
-        //private readonly UserManager<ApplicationUser> _userManager;
-        //private readonly RoleManager<IdentityRole> _roleManager;
+        private readonly UserManager<ApplicationUser> _userManager;
+        private readonly RoleManager<IdentityRole> _roleManager;
 
-        public QuestionsController(ApplicationDbContext context)
-            //,
-            //UserManager<ApplicationUser> userManager,
-            //RoleManager<IdentityRole> roleManager)
+        public QuestionsController(ApplicationDbContext context,
+            UserManager<ApplicationUser> userManager,
+            RoleManager<IdentityRole> roleManager)
         {
             db = context;
-            //_userManager = userManager;
-            //_roleManager = roleManager;
+            _userManager = userManager;
+            _roleManager = roleManager;
         }
 
         private void SetAccessRights()
@@ -31,18 +30,18 @@ namespace Developer_Toolbox.Controllers
             ViewBag.AfisareButoane = false;
 
 
-            //ViewBag.EsteAdmin = User.IsInRole("Admin");
+            ViewBag.EsteAdmin = User.IsInRole("Admin");
 
-            //ViewBag.UserCurent = _userManager.GetUserId(User);
+            ViewBag.UserCurent = _userManager.GetUserId(User);
         }
 
         public IActionResult Index()
         {
             SetAccessRights();
             var questions = db.Questions.Include("User");
-            /*
+            
             //ne definim o variabila care va stoca intrebarile impreuna cu informatiile asociate acestora necesare viw-ului
-            var questionsWithAutor = from question in db.Questions
+            var questionsWithAutor = from question in db.Questions.Include("User")
                                         .Select(qst => new
                                         {
                                             Question = qst,
@@ -54,7 +53,7 @@ namespace Developer_Toolbox.Controllers
                                  select question;
             ViewBag.QuestionsWithAutor = questionsWithAutor;
             ViewBag.Questions = questions;
-            */
+            
 
             // MOTOR DE CAUTARE
 
@@ -68,9 +67,22 @@ namespace Developer_Toolbox.Controllers
                 questions = db.Questions
                     .Where(q => q.Title.Contains(search) || q.Description.Contains(search))
                     .Include("User");
+                
+                questionsWithAutor = from question in questions
+                                .Select(qst => new
+                                {
+                                    Question = qst,
+                                    AutorFirstName = db.ApplicationUsers.FirstOrDefault(user => user.Id == qst.UserId).FirstName,
+                                    AutorLastName = db.ApplicationUsers.FirstOrDefault(user => user.Id == qst.UserId).LastName,
+                                    //AutorUserName = db.ApplicationUsers.FirstOrDefault(user => user.Id == qst.UserId).UserName,
+                                    AutorId = db.ApplicationUsers.FirstOrDefault(user => user.Id == qst.UserId).Id,
+                                })
+                                orderby question.Question.CreatedDate descending
+                                select question;
             }
 
             ViewBag.Questions = questions;
+            ViewBag.QuestionsWithAutor = questionsWithAutor;
             ViewBag.SearchString = search;
 
 
@@ -86,21 +98,21 @@ namespace Developer_Toolbox.Controllers
             }
 
 
-            // Fiind un numar variabil de articole, verificam de fiecare data utilizand 
+            // Fiind un numar variabil de intrebari, verificam de fiecare data utilizand 
             // metoda Count()
 
-            int totalItems = questions.Count();
+            int totalItems = questionsWithAutor.Count();
 
 
             // Se preia pagina curenta din View-ul asociat
             // Numarul paginii este valoarea parametrului page din ruta
-            // /Articles/Index?page=valoare
+            // /Questions/Index?page=valoare
 
             var currentPage = Convert.ToInt32(HttpContext.Request.Query["page"]);
 
             // Pentru prima pagina offsetul o sa fie zero
             // Pentru pagina 2 o sa fie 3 
-            // Asadar offsetul este egal cu numarul de articole care au fost deja afisate pe paginile anterioare
+            // Asadar offsetul este egal cu numarul de intrebari care au fost deja afisate pe paginile anterioare
             var offset = 0;
 
             // Se calculeaza offsetul in functie de numarul paginii la care suntem
@@ -109,17 +121,17 @@ namespace Developer_Toolbox.Controllers
                 offset = (currentPage - 1) * _perPage;
             }
 
-            // Se preiau articolele corespunzatoare pentru fiecare pagina la care ne aflam 
+            // Se preiau intrebarile corespunzatoare pentru fiecare pagina la care ne aflam 
             // in functie de offset
-            var paginatedQuestions = questions.Skip(offset).Take(_perPage);
+            var paginatedQuestions = questionsWithAutor.Skip(offset).Take(_perPage);
 
 
             // Preluam numarul ultimei pagini
 
             ViewBag.lastPage = Math.Ceiling((float)totalItems / (float)_perPage);
 
-            // Trimitem articolele cu ajutorul unui ViewBag catre View-ul corespunzator
-            ViewBag.Questions = paginatedQuestions;
+            // Trimitem intrebarile cu ajutorul unui ViewBag catre View-ul corespunzator
+            ViewBag.QuestionsWithAutor = paginatedQuestions;
 
             if (search != "")
             {
@@ -131,12 +143,25 @@ namespace Developer_Toolbox.Controllers
             }
 
 
+            ///verificam daca userul este conectat, iar daca da, daca are profilul complet
+            bool userProfilComplet = false;
+            bool userConectat = false;
+            if (_userManager.GetUserId(User) != null)
+            {
+                userConectat = true;
+                if (db.ApplicationUsers.FirstOrDefault(user => user.Id == _userManager.GetUserId(User)).FirstName != null)
+                    userProfilComplet = true;
+            }
+            
+            ViewBag.UserProfilComplet = userProfilComplet;
+
 
             if (TempData.ContainsKey("message"))
             {
                 ViewBag.Message = TempData["message"];
                 ViewBag.Alert = TempData["messageType"];
             }
+
             return View();
         }
 
@@ -152,9 +177,10 @@ namespace Developer_Toolbox.Controllers
             var questionWithAnswers = question.Answers
                                         .Select(answ => new
                                         {
-                                            Answer = answ
-                                            //,AutorFirstName = db.ApplicationUsers.FirstOrDefault(user => user.Id == answ.UserId).FirstName,
-                                            //AutorLastName = db.ApplicationUsers.FirstOrDefault(user => user.Id == answ.UserId).LastName
+                                            Answer = answ,
+                                            AutorFirstName = db.ApplicationUsers.FirstOrDefault(user => user.Id == answ.UserId).FirstName,
+                                            AutorLastName = db.ApplicationUsers.FirstOrDefault(user => user.Id == answ.UserId).LastName,
+                                            AutorId = db.ApplicationUsers.FirstOrDefault(user => user.Id == answ.UserId).Id 
                                         })
                                         .ToList();
             ViewBag.QuestionWithAnswers = questionWithAnswers;
@@ -162,12 +188,14 @@ namespace Developer_Toolbox.Controllers
             ViewBag.Question = question;
 
             bool saved = false;
+            string userCurent = _userManager.GetUserId(User);
 
-            if (db.Bookmarks.Any(b => b.UserId == "066215bd-686b-4fdf-b047-ec77c473e43b" && b.QuestionId == id))
+            if (db.Bookmarks.Any(b => b.UserId == userCurent && b.QuestionId == id))
                 saved = true;
             ViewBag.Saved = saved;
-            //ApplicationUser user = db.ApplicationUsers.Where(user => user.Id == question.UserId).FirstOrDefault();
-            //ViewBag.User = user;
+
+            ApplicationUser user = db.ApplicationUsers.Where(user => user.Id == question.UserId).FirstOrDefault();
+            ViewBag.User = user;
             if (TempData.ContainsKey("message"))
             {
                 ViewBag.Message = TempData["message"];
@@ -186,12 +214,12 @@ namespace Developer_Toolbox.Controllers
                 // Dacă utilizatorul nu este autentificat, direcționează-l către pagina de înregistrare
                 return Redirect("/Identity/Account/Login");
             }
-            /*
+            
             ApplicationUser user = db.ApplicationUsers.Where(user => user.Id == _userManager.GetUserId(User)).FirstOrDefault();
             
             if (user == null)
                 return Redirect("/ApplicationUser/New");
-            */
+            
             Console.BackgroundColor = ConsoleColor.Green;
             return View();
         }
@@ -200,7 +228,7 @@ namespace Developer_Toolbox.Controllers
         [HttpPost]
         public IActionResult New(Question question)
         {
-            //question.UserId = _userManager.GetUserId(User);
+            question.UserId = _userManager.GetUserId(User);
             try
             {
                 Console.BackgroundColor = ConsoleColor.Green;
@@ -305,7 +333,34 @@ namespace Developer_Toolbox.Controllers
             var question = db.Questions.Find(questionId);
             if (question != null)
             {
-                question.DislikesNr++; // Decrementam numărului de like-uri
+                question.DislikesNr++; // Incrementam numărului de dislike-uri
+                db.SaveChanges();
+                return Redirect("/Questions/Show/" + questionId);// Redirecționam la pagina intrebarii
+            }
+            // Tratam cazul în care întrebarea nu există sau alte erori
+            return NotFound();
+        }
+
+        public IActionResult UndoLikeQuestion(int questionId)
+        {
+            Console.WriteLine("Nr intrebare: " + questionId);
+            var question = db.Questions.Find(questionId);
+            if (question != null)
+            {
+                question.LikesNr--; // Decrementam numărului de like-uri
+                db.SaveChanges();
+                return Redirect("/Questions/Show/" + questionId);// Redirecționam la pagina intrebarii
+            }
+            // Tratam cazul în care întrebarea nu există sau alte erori
+            return NotFound();
+        }
+        public IActionResult UndoDislikeQuestion(int questionId)
+        {
+            Console.WriteLine("Nr intrebare: " + questionId);
+            var question = db.Questions.Find(questionId);
+            if (question != null)
+            {
+                question.DislikesNr--; // Decrementam numărului de dislike-uri
                 db.SaveChanges();
                 return Redirect("/Questions/Show/" + questionId);// Redirecționam la pagina intrebarii
             }

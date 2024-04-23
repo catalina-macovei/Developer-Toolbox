@@ -12,15 +12,33 @@ namespace Developer_Toolbox.Controllers
     {
         private readonly ApplicationDbContext db;
 
-        public BookmarksController(ApplicationDbContext context)
+        private readonly UserManager<ApplicationUser> _userManager;
+        private readonly RoleManager<IdentityRole> _roleManager;
+        public BookmarksController(ApplicationDbContext context,
+            UserManager<ApplicationUser> userManager,
+            RoleManager<IdentityRole> roleManager)
         {
             db = context;
+            _userManager = userManager;
+            _roleManager = roleManager;
         }
+
+        private void SetAccessRights()
+        {
+            ViewBag.AfisareButoane = false;
+
+
+            ViewBag.EsteAdmin = User.IsInRole("Admin");
+
+            ViewBag.UserCurent = _userManager.GetUserId(User);
+        }
+
+        
         public IActionResult Show()
         {
-
+            var userCurent = _userManager.GetUserId(User);
             ViewBag.Questions = from bookmark in db.Bookmarks.Include("Question")
-                                .Where(b => b.UserId == "066215bd-686b-4fdf-b047-ec77c473e43b")
+                                .Where(b => b.UserId == userCurent)
                                 select bookmark.Question; 
 
             if (TempData.ContainsKey("message"))
@@ -36,12 +54,12 @@ namespace Developer_Toolbox.Controllers
         public IActionResult Save(int questionId)
         {
             // Verifică dacă utilizatorul nu a salvat deja întrebarea
-            var userId = "066215bd-686b-4fdf-b047-ec77c473e43b";
-            if (!db.Bookmarks.Any(b => b.UserId == userId && b.QuestionId == questionId))
+            var userCurent = _userManager.GetUserId(User);
+            if (!db.Bookmarks.Any(b => b.UserId == userCurent && b.QuestionId == questionId))
             {
                 // Adaugă o nouă înregistrare în tabela Bookmark
                 Console.WriteLine("Acesta e id-ul preluat: " + questionId);
-                var bookmark = new Bookmark { UserId = userId, QuestionId = questionId };
+                var bookmark = new Bookmark { UserId = userCurent, QuestionId = questionId };
                 TempData["message"] = "The question has been successfully saved!";
                 TempData["messageType"] = "alert-primary";
                 db.Bookmarks.Add(bookmark);
@@ -57,10 +75,11 @@ namespace Developer_Toolbox.Controllers
 
         public IActionResult Unsave(int questionId)
         {
-            //SetAccessRights();
+            SetAccessRights();
+            var userCurent = _userManager.GetUserId(User);
             Console.WriteLine("Acesta e id-ul preluat: " + questionId);
             var bookmark = db.Bookmarks
-                .Where(b => b.UserId == "066215bd-686b-4fdf-b047-ec77c473e43b" && b.QuestionId == questionId).First();
+                .Where(b => b.UserId == "userCurent" && b.QuestionId == questionId).First();
             db.Bookmarks.Remove(bookmark);
             db.SaveChanges();
             TempData["message"] = "You have removed the question from the saved questions list.";
