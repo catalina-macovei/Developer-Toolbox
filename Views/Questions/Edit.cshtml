@@ -1,0 +1,31 @@
+﻿@model Developer_Toolbox.Models.Question
+
+<h2>Edit question</h2>
+<br />
+
+<form method="post" action="/Questions/Edit/@ViewBag.Question.Id">
+
+    <div class="card-body">
+        <div class="row">
+            @*<label>Titlu</label>*@
+            @Html.Label("Title", "Title")
+            <br />
+            @Html.Editor("Title", new { htmlAttributes = new { @class = "form-control" } })
+        </div>
+        <br />
+        <div class="row">
+            <label>Descriere</label>
+            @Html.TextArea("Description", new { htmlAttributes = new { @class = "form-control" } })
+            @*<textarea class="form-control" name="Description"></textarea>*@
+        </div>
+
+        <br /><br />
+
+        <button class="btn btn-primary px-3 rounded-pill mb-3" type="submit">Save changes</button>
+
+    </div>
+
+</form>
+
+
+

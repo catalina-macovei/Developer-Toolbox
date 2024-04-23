@@ -11,6 +11,8 @@ namespace Developer_Toolbox.Models
         public int LikesNr { get; set; }
 
         public int DislikesNr { get; set; }
+
+        [Required(ErrorMessage = "The content field is required!")]
         public string Content { get; set; }
         public string? UserId { get; set; }
         public virtual ApplicationUser? User { get; set; }

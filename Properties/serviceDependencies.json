@@ -2,12 +2,16 @@
   "dependencies": {
     "mssql1": {
       "type": "mssql",
+<<<<<<< HEAD
+      "connectionId": "ConnectionStrings:DeveloperToolBoxV1"
+=======
       "connectionId": "ConnectionStrings:DefaultConnection"
     },
     "mssql2": {
       "type": "mssql",
       "connectionId": "ConnectionStrings:DeveloperToolbox",
       "dynamicId": null
+>>>>>>> development
     }
   }
 }
