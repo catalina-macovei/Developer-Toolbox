@@ -43,3 +43,8 @@ body {
         max-width: 100% !important;
     }
 }
+
+
+.note-editor .dropdown-toggle::after {
+    display: none;
+}

@@ -1,0 +1,89 @@
+﻿@model Developer_Toolbox.Models.Exercise
+
+
+
+<div class="container py-5">
+    <h2 class="text-center">Add Exercise</h2>
+
+    <div class="row">
+        <div class="col-6 offset-3">
+            <form class="d-flex flex-column gap-3 overflow-auto" method="post" enctype="multipart/form-data" action="/Exercises/New">
+                @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+                <div>
+                    @Html.Label("Title", "Exercise Title")
+
+                    @Html.TextBox("Title", null, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(m => m.Title, "", new { @class = "text-danger" })
+                </div>
+                <div>
+                    <label>Select Category</label>
+                    @Html.DropDownListFor(m => m.CategoryId,
+                    new SelectList(Model.Categories, "Value", "Text"),
+                    "Select Category", new { @class = "form-control" })
+
+                    @Html.ValidationMessageFor(m => m.CategoryId, null, new { @class = "text-danger" })
+                </div>
+                <div>
+                    @Html.Label("Summary", "Summary")
+
+                    @Html.TextBox("Summary", null, new { @class = "form-control" })
+                    @Html.ValidationMessage("Summary", null, new { @class = "text-danger" })
+                </div>
+                <div>
+                    @Html.Label("Description", "Exercise Decription")
+
+                    @Html.TextArea("Description", null, new { @class = "form-control"})
+                    @Html.ValidationMessage("Description", null, new { @class = "text-danger" })
+                </div>
+                <div>
+                    @Html.Label("Restrictions", "Restrictions")
+
+                    @Html.TextArea("Restrictions", null, new { @class = "summernote" })
+                    @Html.ValidationMessage("Restrictions", null, new { @class = "text-danger" })
+                </div>
+                <div>
+                    @Html.Label("Examples")
+
+                    @Html.TextArea("Examples", null, new { @class = "summernote" })
+                    @Html.ValidationMessage("Examples", null, new { @class = "text-danger" })
+                </div>
+                
+                <div class="d-flex gap-1 justify-content-start mt-2">
+                    @Html.Label("Level of difficulty")
+                    @Html.DropDownListFor(
+                    (ex => ex.Difficulty),
+                    (IEnumerable<SelectListItem>)ViewBag.OptionsSelectList,
+                    "Select",
+                    new { @class = "form-control" }
+                    )
+                </div>
+                
+                @*
+                    pentru fisiere input output
+                <div>
+                    <div>
+                        <label for="file">Upload Photo</label>
+                        <input type="file" id="file" name="file" />
+
+                    </div>
+                    @Html.ValidationMessage("PhotoSrc", null, new { @class = "text-danger" })
+                </div>
+                
+                @if (User.IsInRole("Admin"))
+                {
+                    <button class="btn btn-outline" style="background-color:pink; color:black;" type="submit">Add Product</button>
+
+                }
+                @if (User.IsInRole("Collaborator"))
+                {
+                    <button class="btn btn-outline" style="background-color:pink; color:black;" type="submit">Request to Add</button>
+
+                }
+                *@
+                <button class="btn btn-outline" style="background-color:#eee; color:black;" type="submit">Add Exercise</button>
+            </form>
+        </div>
+    </div>
+</div>
+
