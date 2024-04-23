@@ -1,7 +1,13 @@
 {
   "dependencies": {
     "mssql1": {
+      "serviceConnectorResourceId": "",
+      "secretStore": null,
+      "resourceId": null,
       "type": "mssql.local",
+<<<<<<< HEAD
+      "connectionId": "ConnectionStrings:DeveloperToolBoxV1"
+=======
       "connectionId": "ConnectionStrings:DefaultConnection"
     },
     "mssql2": {
@@ -10,6 +16,7 @@
       "type": "mssql.local",
       "connectionId": "ConnectionStrings:DeveloperToolbox",
       "dynamicId": null
+>>>>>>> development
     }
   }
 }
