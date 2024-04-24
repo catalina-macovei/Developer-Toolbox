@@ -1,10 +1,12 @@
 ﻿using Developer_Toolbox.Data;
 using Developer_Toolbox.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace Developer_Toolbox.Controllers
 {
+    [Authorize(Roles = "Admin")]
     public class TagsController : Controller
     {
         private readonly ApplicationDbContext db;

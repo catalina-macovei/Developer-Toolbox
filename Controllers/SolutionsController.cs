@@ -1,5 +1,7 @@
 ﻿using Developer_Toolbox.Data;
 using Developer_Toolbox.Models;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -9,10 +11,16 @@ namespace Developer_Toolbox.Controllers
     public class SolutionsController : Controller
     {
         private readonly ApplicationDbContext db;
-        public SolutionsController(ApplicationDbContext context)
+        private readonly UserManager<ApplicationUser> _userManager;
+        private readonly RoleManager<IdentityRole> _roleManager;
+        public SolutionsController(ApplicationDbContext context, UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager)
         {
             db = context;
+            _userManager = userManager;
+            _roleManager = roleManager;
         }
+
+        [Authorize(Roles = "User,Collaborator,Admin")]
         public IActionResult Index()
         {
             var solutions = db.Solutions.Include("Exercise")
@@ -29,6 +37,7 @@ namespace Developer_Toolbox.Controllers
             return View();
         }
 
+        [Authorize(Roles = "User,Collaborator,Admin")]
         public ActionResult New()
         {
             // Retrieve the list of exercises
@@ -43,6 +52,7 @@ namespace Developer_Toolbox.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "User,Collaborator,Admin")]
         public ActionResult New(Solution solution)
         {
             if (ModelState.IsValid)
@@ -58,7 +68,7 @@ namespace Developer_Toolbox.Controllers
             return View(solution);
         }
 
-
+        [Authorize(Roles = "User,Collaborator,Admin")]
         public IActionResult Show(int id) 
         { 
             Solution solution = db.Solutions.Include("Exercise")
@@ -70,6 +80,7 @@ namespace Developer_Toolbox.Controllers
 
         
         [HttpPost]
+        [Authorize(Roles = "User,Collaborator,Admin")]
         public IActionResult Delete(int id)
         {
             Solution solution = db.Solutions.Find(id);
