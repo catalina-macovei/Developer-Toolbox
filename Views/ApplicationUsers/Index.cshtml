@@ -2,11 +2,22 @@
     ViewBag.Title = "Index";
 }
 
+<br />
+
+@if (TempData["message"] != null)
+{
+    <div class="alert alert-primary p-3 rounded-3 text-center mb-5" role="alert">
+        @ViewBag.Message
+    </div>
+}
+
+<br />
+
 
 <div class="d-flex justify-content-end">
 
 
-    <a class="btn btn-success custom-btn mr-10" href="/ApplicationUsers/Show/@ViewBag.UserCurent">View My Profile</a>
+    <a class=" btn btn-primary custom-btn mr-10" href="/ApplicationUsers/Show/@ViewBag.UserCurent">View My Profile</a>
     
 
 </div>
@@ -25,7 +36,7 @@
         <input type="text" class="form-control"
                placeholder="Search topics or keywords" name="search"
                value="@ViewBag.SearchString">
-        <button class="btn btn-outline-success" type="submit">Search</button>
+        <button class="btn btn-outline-primary" type="submit">Search</button>
     </div>
 </form>
 
@@ -34,10 +45,10 @@
 {
     <div class="card">
         <div class="card-body">
-            <h3 class="card-title alert-success py-3 px-3 rounded-2">@user.FirstName @user.LastName</h3>
+            <h3 class="card-title primary py-3 px-3 rounded-2">@user.FirstName @user.LastName</h3>
         </div>
-        <div class="position-relative" style="bottom: 7px; left: 1150px;">
-            <a class="btn btn-success" href="/ApplicationUsers/Show/@user.Id">Show Profile</a>
+        <div class="position-relative" style="bottom: 7px; left: 1350px;">
+            <a class="btn btn-primary" href="/ApplicationUsers/Show/@user.Id">Show Profile</a>
         </div>
     </div>
 
