@@ -17,7 +17,7 @@
 
 <div class="d-flex justify-content-end">
 
-    @if (@ViewBag.User.Id == ViewBag.UserCurent || ViewBag.EsteAdmin || ViewBag.EsteModerator)
+    @if (ViewBag.User.Id == ViewBag.UserCurent || ViewBag.EsteAdmin || ViewBag.EsteModerator)
     {
     <a class="btn btn-success custom-btn mr-10" href="/ApplicationUsers/Edit/@ViewBag.User.Id">Edit Profile</a>
      <a class="btn btn-danger custom-btn position-relative" style="left: 5px;" href="/ApplicationUsers/Delete/@ViewBag.User.Id">Delete Profile</a>
