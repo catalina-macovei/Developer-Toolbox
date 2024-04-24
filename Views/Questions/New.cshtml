@@ -1,0 +1,33 @@
+﻿@{
+    ViewBag.Title = "New";
+}
+
+<h2>Ask a new question</h2>
+<br />
+<br />
+
+<div class="card">
+
+    <form method="post" action="/Questions/New">
+
+        <div class="card-body">
+
+            <div class="row">
+                <label>Title</label>
+                <textarea class="form-control" name="Title"></textarea>
+            </div>
+
+            <div class="row">
+                <label>Description</label>
+                <textarea class="form-control" name="Description"></textarea>
+            </div>
+
+            <br /><br />
+
+            <button class="btn btn-success" type="submit">Post</button>
+
+        </div>
+
+    </form>
+
+</div>
