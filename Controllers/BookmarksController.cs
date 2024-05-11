@@ -79,7 +79,7 @@ namespace Developer_Toolbox.Controllers
             var userCurent = _userManager.GetUserId(User);
             Console.WriteLine("Acesta e id-ul preluat: " + questionId);
             var bookmark = db.Bookmarks
-                .Where(b => b.UserId == "userCurent" && b.QuestionId == questionId).First();
+                .Where(b => b.UserId == userCurent && b.QuestionId == questionId).First();
             db.Bookmarks.Remove(bookmark);
             db.SaveChanges();
             TempData["message"] = "You have removed the question from the saved questions list.";
