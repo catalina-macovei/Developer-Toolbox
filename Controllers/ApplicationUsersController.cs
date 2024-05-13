@@ -54,6 +54,11 @@ namespace Developer_Toolbox.Controllers
 
             ViewBag.Users = users.ToList(); // Obținem lista completă de utilizatori după aplicarea filtrului
             ViewBag.SearchString = search;
+            if (TempData.ContainsKey("message"))
+            {
+                ViewBag.Message = TempData["message"];
+                ViewBag.Alert = TempData["messageType"];
+            }
             return View();
         }
 
@@ -70,12 +75,21 @@ namespace Developer_Toolbox.Controllers
                     return Redirect("/Identity/Account/Login");
                 }
 
-                ApplicationUser currentUser = _userManager.GetUserAsync(User).Result;
+                //ApplicationUser currentUser = _userManager.GetUserAsync(User).Result;
+
             ApplicationUser user = db.ApplicationUsers
                           .Where(u => u.Id == id)
                           .FirstOrDefault();
+
                ViewBag.User = user;
-                return View();
+
+            if (TempData.ContainsKey("message"))
+            {
+                ViewBag.Message = TempData["message"];
+                ViewBag.Alert = TempData["messageType"];
+            }
+
+            return View();
         }
 
         // formularul in care se vor completa datele unei profil nou
@@ -152,9 +166,11 @@ namespace Developer_Toolbox.Controllers
             user.LastName = requestProfile.LastName;
             user.Description = requestProfile.Description;
             user.Birthday= requestProfile.Birthday;
-            db.SaveChanges();
+           
             TempData["message"] = "You edited your profile successfully!";
             TempData["messageType"] = "alert-success";
+            db.SaveChanges();
+            
             return RedirectToAction("Index");
             //}
             //else

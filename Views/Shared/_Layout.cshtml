@@ -1,4 +1,8 @@
-﻿<!DOCTYPE html>
+﻿@using Microsoft.AspNetCore.Identity;
+@inject SignInManager<ApplicationUser> SignInManager
+@inject UserManager<ApplicationUser> UserManager
+
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -32,17 +36,15 @@
                             <a class="nav-link text-white" style="font-weight:bold;" asp-area="" asp-controller="Solutions" asp-action="Index">Solutions</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-white" style="font-weight:bold;" asp-area="" asp-controller="Categories" asp-action="Index">Practice</a>
+                            <a class="nav-link text-white" style="font-weight:bold;" asp-area="" asp-controller="ApplicationUsers" asp-action="Index">Users</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-white" style="font-weight:bold;" asp-area="" asp-controller="Questions" asp-action="Index">Questions</a>
+                            <a class="nav-link text-white" style="font-weight:bold;" href="/ApplicationUsers/Show/@UserManager.GetUserId(User)">My Profile</a>
                         </li>
-                        @if (User.Identity.IsAuthenticated)
-                        {
-                            <li class="nav-item">
-                                <a class="nav-link text-white" style="font-weight:bold;" asp-area="" asp-controller="Bookmarks" asp-action="Show">Saved</a>
-                            </li>
-                        }
+                        <li class="nav-item">
+                            <a class="nav-link text-white" style="font-weight:bold;" asp-area="" asp-controller="Categories" asp-action="Index">Practice</a>
+                        </li>
+
                     </ul>
                     <partial name="_LoginPartial" />
                 </div>
