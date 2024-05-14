@@ -1,5 +1,7 @@
 ﻿using Developer_Toolbox.Data;
 using Developer_Toolbox.Models;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -29,11 +31,18 @@ namespace Developer_Toolbox.Controllers
         public IActionResult Show(int id)
         {
             // find a tag in DB
-            Tag tag = db.Tags.Find(id);
 
-            return View(tag);
+            var taggedQuestions = db.Tags
+                        .Include(tag => tag.QuestionTags)
+                            .ThenInclude(qt => qt.Question)
+                        .FirstOrDefault(tag => tag.Id == id);
+
+            ViewBag.taggedQuestions = taggedQuestions;
+
+            return View(taggedQuestions);
         }
 
+        [Authorize(Roles = "Collaborator,Admin")]
         public ActionResult New()
         {
             // build a new object of type tag
@@ -42,6 +51,8 @@ namespace Developer_Toolbox.Controllers
             return View(tag);
         }
 
+
+        [Authorize(Roles = "Collaborator,Admin")]
         [HttpPost]
         public ActionResult New(Tag tag)
         {
@@ -59,6 +70,7 @@ namespace Developer_Toolbox.Controllers
             return RedirectToAction("Index");
         }
 
+        [Authorize(Roles = "Collaborator,Admin")]
         public IActionResult Edit(int id)
         {
             Tag tag = db.Tags.Find(id);
@@ -66,6 +78,7 @@ namespace Developer_Toolbox.Controllers
             return View(tag);
         }
 
+        [Authorize(Roles = "Collaborator,Admin")]
         [HttpPost]
         public ActionResult Edit(int id, Tag requestTag)
         {
@@ -87,7 +100,7 @@ namespace Developer_Toolbox.Controllers
             return View(requestTag);
         }
 
-
+        [Authorize(Roles = "Collaborator,Admin")]
         [HttpPost]
         public ActionResult Delete(int id)
         {
