@@ -30,10 +30,12 @@ namespace Developer_Toolbox.Controllers
 
             ViewBag.UserCurent = _userManager.GetUserId(User);
         }
+
+        //Metoda care realizeaza actiunea pentru like-ul unei intrebari
+        //Nu se poate realiza like si dislike simultan la aceeasi intrebare de catre acelasi utilizator
         public IActionResult LikeQuestion(int questionId)
         {
             var userCurent = _userManager.GetUserId(User);
-            ///Console.WriteLine("Nr intrebare: " + questionId);
             var question = db.Questions.Find(questionId);
             if (question != null)
             {
@@ -72,10 +74,13 @@ namespace Developer_Toolbox.Controllers
             // Tratam cazul în care întrebarea nu există sau alte erori
             return NotFound();
         }
+
+        //Metoda care realizeaza actiunea pentru dislike-ul unei intrebari
+        //Nu se poate realiza like si dislike simultan la aceeasi intrebare de catre acelasi utilizator
+
         public IActionResult DislikeQuestion(int questionId)
         {
             var userCurent = _userManager.GetUserId(User);
-            ///Console.WriteLine("Nr intrebare: " + questionId);
             var question = db.Questions.Find(questionId);
             if (question != null)
             {
@@ -112,10 +117,12 @@ namespace Developer_Toolbox.Controllers
             return NotFound();
         }
 
+        //Metoda care realizeaza actiunea din apasarea dubla a unui buton de like, mai exact Undo-Like, cand utilizatorul
+        //doreste sa isi retraga likeul de la o intrebare
+
         public IActionResult UndoLikeQuestion(int questionId)
         {
             var userCurent = _userManager.GetUserId(User);
-            ///Console.WriteLine("Nr intrebare: " + questionId);
             var question = db.Questions.Find(questionId);
             if (question != null)
             {
@@ -134,10 +141,12 @@ namespace Developer_Toolbox.Controllers
             // Tratam cazul în care întrebarea nu există sau alte erori
             return NotFound();
         }
+
+        //Metoda care realizeaza actiunea din apasarea dubla a unui buton de dislike, mai exact Undo-Dislike, cand utilizatorul
+        //doreste sa isi retraga dislikeul de la o intrebare
         public IActionResult UndoDislikeQuestion(int questionId)
         {
             var userCurent = _userManager.GetUserId(User);
-            ///Console.WriteLine("Nr intrebare: " + questionId);
             var question = db.Questions.Find(questionId);
             if (question != null)
             {
