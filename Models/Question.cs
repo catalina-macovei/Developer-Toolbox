@@ -15,6 +15,8 @@ namespace Developer_Toolbox.Models
 
         public virtual ICollection<Bookmark>? Bookmarks { get; set; }
 
+        public virtual ICollection<Reaction>? Reactions { get; set; }
+
         [Required(ErrorMessage = "The title field is required!")]
         [StringLength(100, ErrorMessage = "The title cannot exceed 100 characters")]
         [MinLength(5, ErrorMessage = "The title must be at least 5 characters long")]
