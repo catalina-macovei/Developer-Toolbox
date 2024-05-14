@@ -45,6 +45,17 @@
                             <a class="nav-link text-white" style="font-weight:bold;" asp-area="" asp-controller="Categories" asp-action="Index">Practice</a>
                         </li>
 
+                        <li class="nav-item">
+                            <a class="nav-link text-white" style="font-weight:bold;" asp-area="" asp-controller="Questions" asp-action="Index">Questions</a>
+                        </li>
+                        
+                        @*Se adauga sectiune "Saved" doar daca utilizatorul este logat, astfel nu detine o astfel de sectiune*@
+                        @if (User.Identity.IsAuthenticated)
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-white" style="font-weight:bold;" asp-area="" asp-controller="Bookmarks" asp-action="Show">Saved</a>
+                            </li>
+                        }
                     </ul>
                     <partial name="_LoginPartial" />
                 </div>
