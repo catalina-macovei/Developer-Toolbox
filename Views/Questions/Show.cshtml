@@ -61,29 +61,53 @@
                             </div>
                         }
                     </div>
-                    <div class="d-flex justify-content-between flex-row mt-5">
-                        @if(ViewBag.Saved == false)
-                        {
-                            <a class="btn btn-outline-primary px-3 rounded-pill mb-3" href="/Bookmarks/Save?questionId=@ViewBag.Question.Id">Save</a>
-                        }
-                        else
-                        {
-                            <a class="btn btn-secondary px-3 rounded-pill mb-3" href="/Bookmarks/Unsave?questionId=@ViewBag.Question.Id">Unsave</a>
-                        }
+                    @if (User.Identity.IsAuthenticated)
+                    {
+                        <div class="d-flex justify-content-between flex-row mt-5">
+                            @if (ViewBag.Saved == false)
+                            {
+                                <a class="btn btn-outline-primary px-3 rounded-pill mb-3" href="/Bookmarks/Save?questionId=@ViewBag.Question.Id">Save</a>
+                            }
+                            else
+                            {
+                                <a class="btn btn-secondary px-3 rounded-pill mb-3" href="/Bookmarks/Unsave?questionId=@ViewBag.Question.Id">Unsave</a>
+                            }
 
-                        <div class="d-flex flex-row justify-content-end">
-                            <!-- Buton pentru like -->
-                            <form method="post" action="/Questions/LikeQuestion?questionId=@ViewBag.Question.Id">
-                                <button type="submit" class="btn btn-primary px-3 rounded-pill mb-3">Like @ViewBag.Question.LikesNr</button>
-                            </form>
+                            <div class="d-flex flex-row justify-content-end">
+                                @if(!ViewBag.Liked)
+                                {
+                                    <!-- Buton pentru like -->
+                                    <form method="post" action="/Reactions/LikeQuestion?questionId=@ViewBag.Question.Id">
+                                        <button type="submit" class="btn btn-light btn-outline-primary px-3 rounded-pill mb-3">Like @ViewBag.Question.LikesNr</button>
+                                    </form>
+                                }
+                                else
+                                {
+                                    <!-- Buton pentru undoLike -->
+                                    <form method="post" action="/Reactions/UndoLikeQuestion?questionId=@ViewBag.Question.Id">
+                                        <button type="submit" class="btn btn-primary px-3 rounded-pill mb-3 ">Liked @ViewBag.Question.LikesNr</button>
+                                    </form>
+                                }
+                                @if(!ViewBag.Disliked)
+                                {
+                                    <!-- Buton pentru dislike -->
+                                    <form method="post" action="/Reactions/DislikeQuestion?questionId=@ViewBag.Question.Id">
+                                        <button type="submit" class="btn btn-light btn-outline-danger px-3 rounded-pill mb-3">Dislike @ViewBag.Question.DislikesNr</button>
+                                    </form>
+                                }
+                                else
+                                {
+                                    <!-- Buton pentru UndoDislike -->
+                                    <form method="post" action="/Reactions/UndoDislikeQuestion?questionId=@ViewBag.Question.Id">
+                                        <button type="submit" class="btn btn-danger px-3 rounded-pill mb-3">Disliked @ViewBag.Question.DislikesNr</button>
+                                    </form>
+                                }
+                            </div>
 
-                            <!-- Buton pentru dislike -->
-                            <form method="post" action="/Questions/DislikeQuestion?questionId=@ViewBag.Question.Id">
-                                <button type="submit" class="btn btn-danger px-3 rounded-pill mb-3">Dislike @ViewBag.Question.DislikesNr</button>
-                            </form>
                         </div>
 
-                    </div>
+
+                    }
                     
                 </div>
 

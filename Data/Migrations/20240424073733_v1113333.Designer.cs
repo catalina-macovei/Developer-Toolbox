@@ -4,6 +4,7 @@ using Developer_Toolbox.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Developer_Toolbox.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240424073733_v1113333")]
+    partial class v1113333
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -177,9 +179,6 @@ namespace Developer_Toolbox.Data.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("UserId")
-                        .HasColumnType("nvarchar(max)");
-
                     b.HasKey("Id");
 
                     b.ToTable("Categories");
@@ -291,32 +290,6 @@ namespace Developer_Toolbox.Data.Migrations
                     b.HasIndex("TagId");
 
                     b.ToTable("QuestionTags");
-                });
-
-            modelBuilder.Entity("Developer_Toolbox.Models.Reaction", b =>
-                {
-                    b.Property<int>("Id")
-                        .HasColumnType("int");
-
-                    b.Property<string>("UserId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<int?>("QuestionId")
-                        .HasColumnType("int");
-
-                    b.Property<bool?>("Disliked")
-                        .HasColumnType("bit");
-
-                    b.Property<bool?>("Liked")
-                        .HasColumnType("bit");
-
-                    b.HasKey("Id", "UserId", "QuestionId");
-
-                    b.HasIndex("QuestionId");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("Reactions");
                 });
 
             modelBuilder.Entity("Developer_Toolbox.Models.Solution", b =>
@@ -578,25 +551,6 @@ namespace Developer_Toolbox.Data.Migrations
                     b.Navigation("Tag");
                 });
 
-            modelBuilder.Entity("Developer_Toolbox.Models.Reaction", b =>
-                {
-                    b.HasOne("Developer_Toolbox.Models.Question", "Question")
-                        .WithMany("Reactions")
-                        .HasForeignKey("QuestionId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Developer_Toolbox.Models.ApplicationUser", "User")
-                        .WithMany("Reactions")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Question");
-
-                    b.Navigation("User");
-                });
-
             modelBuilder.Entity("Developer_Toolbox.Models.Solution", b =>
                 {
                     b.HasOne("Developer_Toolbox.Models.Exercise", "Exercise")
@@ -673,8 +627,6 @@ namespace Developer_Toolbox.Data.Migrations
 
                     b.Navigation("Questions");
 
-                    b.Navigation("Reactions");
-
                     b.Navigation("Solutions");
                 });
 
@@ -695,8 +647,6 @@ namespace Developer_Toolbox.Data.Migrations
                     b.Navigation("Bookmarks");
 
                     b.Navigation("QuestionTags");
-
-                    b.Navigation("Reactions");
                 });
 
             modelBuilder.Entity("Developer_Toolbox.Models.Tag", b =>
