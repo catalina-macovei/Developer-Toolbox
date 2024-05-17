@@ -6,6 +6,7 @@ namespace Developer_Toolbox.Models
     {
         [Key]
         public int Id { get; set; }
+        public String? SolutionCode { get; set; }
         public int? Score { get; set; }
         public int? ExerciseId { get; set; }
         public virtual Exercise? Exercise { get; set; }
