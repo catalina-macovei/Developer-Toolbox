@@ -333,6 +333,9 @@ namespace Developer_Toolbox.Data.Migrations
                     b.Property<int?>("Score")
                         .HasColumnType("int");
 
+                    b.Property<string>("SolutionCode")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("UserId")
                         .HasColumnType("nvarchar(450)");
 

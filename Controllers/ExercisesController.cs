@@ -179,9 +179,50 @@ namespace Developer_Toolbox.Controllers
                                             .Include("User")
                                             .Where(exercise => exercise.Id == id)
                                             .First();
-
+            @ViewBag.CurrentCode = "";
             return View(exercise);  
 
+        }
+
+        [HttpPost]
+        [Authorize(Roles = "User,Editor,Admin")]
+        public IActionResult Show(string id, string x)
+        {
+            // TODO: in view preia codul din editor pentru SolutionCode
+            // TODO: calculeaza scorul in functie de rezultatele testarii
+            Solution solution = new Solution();
+            solution.SolutionCode = x;
+            solution.ExerciseId = int.Parse(id);
+            solution.UserId = _userManager.GetUserId(User);
+
+            if (ModelState.IsValid)
+            {
+                db.Solutions.Add(solution);
+                db.SaveChanges();
+
+                // recalculam reputation points in functie de scor
+
+                TempData["message"] = "Your solution has been submitted";
+                TempData["messageType"] = "alert-success";
+
+                // TODO: depinde unde afisam rezultatele testarii
+                return Redirect("/Solutions/Show/" + solution.Id);
+            }
+            else
+            {
+                Exercise ex = db.Exercises.Include("Category")
+                                          .Include("User")
+                                          .Include("Solutions")
+                                          .Where(ex => ex.Id == solution.ExerciseId)
+                                          .First();
+
+                //trimitem in view si codul curent
+                ViewBag.CurrentCode = solution.SolutionCode;
+
+                SetAccessRights();
+
+                return View(ex);
+            }
         }
 
         [Authorize(Roles = "Admin,Editor")]
