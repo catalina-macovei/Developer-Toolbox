@@ -6,6 +6,9 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
+using System.Net.Http;
+using System.Text;
 using System.Web;
 
 
@@ -17,13 +20,18 @@ namespace Developer_Toolbox.Controllers
 
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly RoleManager<IdentityRole> _roleManager;
+
+        // This is for code execution:  <summary>
+        private readonly HttpClient _httpClient;
+
         public ExercisesController(ApplicationDbContext context,
             UserManager<ApplicationUser> userManager,
-            RoleManager<IdentityRole> roleManager)
+            RoleManager<IdentityRole> roleManager, HttpClient httpClient)
         {
             db = context;
             _userManager = userManager;
             _roleManager = roleManager;
+            _httpClient = httpClient;   // variable for http request to send the code
         }
 
         //Conditii de afisare a butoanelor de editare si stergere
@@ -411,6 +419,30 @@ namespace Developer_Toolbox.Controllers
                 
         }
 
+        [HttpPost]
+        public async Task<IActionResult> ExecuteCode(int id, string solution)
+        {
+            var request = new
+            {
+                id = id,
+                solution = solution
+            };
+
+            var jsonRequest = JsonConvert.SerializeObject(request);
+            var httpContent = new StringContent(jsonRequest, Encoding.UTF8, "application/json");
+
+            var response = await _httpClient.PostAsync("http://localhost:8000/execute", httpContent);
+
+            if (response.IsSuccessStatusCode)
+            {
+                var jsonResponse = await response.Content.ReadAsStringAsync();
+                var result = JsonConvert.DeserializeObject<Dictionary<string, string>>(jsonResponse);
+                return Json(result);
+            }
+
+            return Json(new { error = "Error processing request" });
+        }
+
         [NonAction]
         public IEnumerable<SelectListItem> GetAllCategories()
         {
@@ -435,8 +467,10 @@ namespace Developer_Toolbox.Controllers
 
     }
 
-    // comparator custom pentru ordonare in functie de dificultate
-    public class DifficultyComp : IComparer<string?>
+
+
+// comparator custom pentru ordonare in functie de dificultate
+public class DifficultyComp : IComparer<string?>
     {
         // pentru o ordonare usoara, transformam gradele de dificultate din string in int
         private int TranslateDifficulty(string? difficulty)

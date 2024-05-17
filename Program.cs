@@ -19,6 +19,8 @@ builder.Services.AddDefaultIdentity<ApplicationUser>(options => options.SignIn.R
 
 builder.Services.AddControllersWithViews();
 
+builder.Services.AddHttpClient();  // Register HttpClient for compiler
+
 var app = builder.Build();
 
 // PASUL 5 - useri si roluri

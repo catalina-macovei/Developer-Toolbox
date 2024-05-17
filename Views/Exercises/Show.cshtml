@@ -79,7 +79,7 @@
 
     function getCode() {
         var data = editor.getValue();
-        $.post("/Exercises/Show", { id: @Model.Id, x: data });
+        $.post("/Exercises/ExecuteCode", { id: @Model.Id, solution: data });
     }
 
 </script>
