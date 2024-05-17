@@ -1,11 +1,11 @@
 ﻿@model Developer_Toolbox.Models.Exercise
 
-<section class="d-flex gap-2">
+<section style="display: grid; grid-template-areas: 'Cerinta Editor Editor Editor'">
     @if (TempData.ContainsKey("message"))
     {
         <h4 class="@ViewBag.MessageType p-3 rounded-3 text-center mb-5">@ViewBag.Message</h4>
     }
-    <div class="w-50 m-5">
+    <div class="m-5" style="grid-area: Cerinta">
         <div class="card product">
             <div class="bg-image hover-zoom ripple" data-mdb-ripple-color="light">
                 <div>
@@ -64,4 +64,22 @@
 
 
     </div>
+
+    <div id="editor" style="grid-area: Editor">def myFunc(): {
+        print("Hello World!")
+    }</div>
+    <button formaction="/Exercises/Show" id="submit" class="btn btn-success" type="submit">Submit</button>
+   
 </section>
+
+<script type="text/javascript">
+
+    const element = document.getElementById("submit");
+    element.addEventListener("click", getCode);
+
+    function getCode() {
+        var data = editor.getValue();
+        $.post("/Exercises/Show", { id: @Model.Id, x: data });
+    }
+
+</script>
