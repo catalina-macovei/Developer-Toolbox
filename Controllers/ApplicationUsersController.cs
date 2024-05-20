@@ -3,6 +3,7 @@ using Developer_Toolbox.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace Developer_Toolbox.Controllers
 {
@@ -82,6 +83,20 @@ namespace Developer_Toolbox.Controllers
                           .FirstOrDefault();
 
                ViewBag.User = user;
+
+            var questions = db.Questions.Include("User").Where(q => q.UserId == id);
+            var answers = db.Answers.Include("User").Where(a => a.UserId == id);
+
+            var answerCount = db.Answers.Count(a => a.UserId == id);
+
+            var questionCount = db.Questions.Count(a => a.UserId == id);
+
+
+            ViewBag.Questions = questions;
+            ViewBag.Answers = answers;
+            ViewBag.AnswerCount = answerCount;
+            ViewBag.QuestionCount = questionCount;
+
 
             if (TempData.ContainsKey("message"))
             {

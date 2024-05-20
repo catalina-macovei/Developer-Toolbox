@@ -68,14 +68,48 @@
         <!-- Colapsarea coloanelor pentru ecrane mici și mai mari -->
         <div class="card">
             <div class="card-body">
-                <b>Questions Asked: </b> <br />
-                <b>Answers Posted: </b>
+                <b>Questions Asked: @ViewBag.QuestionCount </b> <br />
+                <b>Answers Posted: @ViewBag.AnswerCount</b>
             </div>
         </div>
     </div>
 </div>
 
 
-    <br />
+</br>
 
-    
+
+
+
+@*Afisare raspunsuri si intrebari postate*@
+
+    <div class="container">
+        <div class="row">
+            <div class="col-md-6">
+                <div class="p-3 border bg-light"><b>Questions</b></div>
+                        @foreach (var question in ViewBag.Questions)
+                        {
+                                <div class="card mb-3"> 
+                                        <div class="card-body text-primary">
+                                                <div class="card-text" ><a href="/Questions/Show/@question.Id">@question.Description </a> </div> 
+                                    </div>
+                                </div>
+                        }
+                        
+                         
+            </div>
+
+            <div class="col-md-6">
+                <div class="p-3 border bg-light"><b>Answers</b></div>
+            @foreach (var answer in ViewBag.Answers)
+            {
+                                    <div class="card mb-3"> 
+                                            <div class="card-body text-primary">
+                                                    <div class="card-text" ><a href="/Answers/Show/@answer.Id">@answer.Description </a> </div> 
+                                        </div>
+                                    </div>
+            }
+            </div>
+        </div>
+    </div>
+

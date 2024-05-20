@@ -1,6 +1,8 @@
 ﻿using Developer_Toolbox.Data;
 using Developer_Toolbox.Models;
 using Ganss.Xss;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -13,9 +15,41 @@ namespace Developer_Toolbox.Controllers
     {
         private readonly ApplicationDbContext db;
 
-        public ExercisesController (ApplicationDbContext context)
+        private readonly UserManager<ApplicationUser> _userManager;
+        private readonly RoleManager<IdentityRole> _roleManager;
+        public ExercisesController(ApplicationDbContext context,
+            UserManager<ApplicationUser> userManager,
+            RoleManager<IdentityRole> roleManager)
         {
             db = context;
+            _userManager = userManager;
+            _roleManager = roleManager;
+        }
+
+        //Conditii de afisare a butoanelor de editare si stergere
+        private void SetAccessRights()
+        {
+            ViewBag.IsModerator = User.IsInRole("Editor");
+
+            ViewBag.IsAdmin = User.IsInRole("Admin");
+
+            ViewBag.CurrentUser = _userManager.GetUserId(User);
+
+            // verificam daca are profilul complet
+            bool completeProfile = false;
+
+            // bool userConectat = false;
+            //if (db.ApplicationUsers.Find(_userManager.GetUserId(User)).FirstName != null)
+            //    userProfilComplet = true;
+
+            if (_userManager.GetUserId(User) != null)
+            {
+                // userConectat = true;
+                if (db.ApplicationUsers.Find(_userManager.GetUserId(User)).FirstName != null)
+                    completeProfile = true;
+            }
+
+            ViewBag.CompleteProfile = completeProfile;
         }
 
         public IActionResult Index(int id)
@@ -23,8 +57,11 @@ namespace Developer_Toolbox.Controllers
             //transmit received message to view
             if (TempData.ContainsKey("message"))
             {
-                ViewBag.message = TempData["message"].ToString();
+                ViewBag.Message = TempData["message"];
+                ViewBag.MessageType = TempData["messageType"].ToString();
             }
+
+            SetAccessRights();
 
             var search = "";
 
@@ -131,21 +168,73 @@ namespace Developer_Toolbox.Controllers
             //transmitem mesajele primite in view
             if (TempData.ContainsKey("message"))
             {
-                ViewBag.message = TempData["message"].ToString();
+                ViewBag.Message = TempData["message"];
+                ViewBag.MessageType = TempData["messageType"];
             }
+
+            SetAccessRights();
 
             // preluam exercitiul cerut
             Exercise exercise = db.Exercises.Include("Category")
                                             .Include("User")
                                             .Where(exercise => exercise.Id == id)
                                             .First();
-
+            @ViewBag.CurrentCode = "";
             return View(exercise);  
 
         }
 
+        [HttpPost]
+        [Authorize(Roles = "User,Editor,Admin")]
+        public IActionResult Show(string id, string x)
+        {
+            // TODO: in view preia codul din editor pentru SolutionCode
+            // TODO: calculeaza scorul in functie de rezultatele testarii
+            Solution solution = new Solution();
+            solution.SolutionCode = x;
+            solution.ExerciseId = int.Parse(id);
+            solution.UserId = _userManager.GetUserId(User);
+
+            if (ModelState.IsValid)
+            {
+                db.Solutions.Add(solution);
+                db.SaveChanges();
+
+                // recalculam reputation points in functie de scor
+
+                TempData["message"] = "Your solution has been submitted";
+                TempData["messageType"] = "alert-success";
+
+                // TODO: depinde unde afisam rezultatele testarii
+                return Redirect("/Solutions/Show/" + solution.Id);
+            }
+            else
+            {
+                Exercise ex = db.Exercises.Include("Category")
+                                          .Include("User")
+                                          .Include("Solutions")
+                                          .Where(ex => ex.Id == solution.ExerciseId)
+                                          .First();
+
+                //trimitem in view si codul curent
+                ViewBag.CurrentCode = solution.SolutionCode;
+
+                SetAccessRights();
+
+                return View(ex);
+            }
+        }
+
+        [Authorize(Roles = "Admin,Editor")]
         public IActionResult New()
         {
+            //transmitem mesajele primite in view
+            if (TempData.ContainsKey("message"))
+            {
+                ViewBag.Message = TempData["message"];
+                ViewBag.MessageType = TempData["messageType"];
+            }
+
             Exercise ex = new Exercise();
 
             // preluam categoriile posibile pentru dropdown
@@ -164,6 +253,7 @@ namespace Developer_Toolbox.Controllers
             return View(ex);
         }
 
+        [Authorize(Roles = "Admin,Editor")]
         [HttpPost]
         public IActionResult New(Exercise ex)
         {
@@ -172,6 +262,7 @@ namespace Developer_Toolbox.Controllers
             var sanitizer = new HtmlSanitizer();
 
             ex.Date = DateTime.Now;
+            ex.UserId = _userManager.GetUserId(User);
 
             if(ModelState.IsValid)
             {
@@ -184,6 +275,7 @@ namespace Developer_Toolbox.Controllers
                 db.SaveChanges();
 
                 TempData["message"] = "The Exercise has been added";
+                TempData["messageType"] = "alert-success";
 
                 return Redirect("/Exercises/Index/" + ex.CategoryId);
 
@@ -206,6 +298,7 @@ namespace Developer_Toolbox.Controllers
             }
         }
 
+        [Authorize(Roles = "Admin,Editor")]
         public IActionResult Edit(int id)
         {
             // preluam exercitiul din baza de date
@@ -230,6 +323,7 @@ namespace Developer_Toolbox.Controllers
             return View(exercise);
         }
 
+        [Authorize(Roles = "Admin,Editor")]
         [HttpPost]
         public IActionResult Edit(int id, Exercise requestedExercise)
         {
@@ -240,20 +334,30 @@ namespace Developer_Toolbox.Controllers
 
             if (ModelState.IsValid)
             {
-                //preluam noile informatii si protejam de cross-scripting
-                exercise.Title = requestedExercise.Title;
-                exercise.Description = requestedExercise.Description;
-                exercise.Summary = requestedExercise.Summary;   
-                exercise.CategoryId = requestedExercise.CategoryId;
-                exercise.Restrictions = sanitizer.Sanitize(requestedExercise.Restrictions);
-                exercise.Examples = sanitizer.Sanitize(requestedExercise.Examples);
-                exercise.Difficulty = requestedExercise.Difficulty;
+                //nu permiterm modificarea exercitiului decat de admin sau de autorul lui
+                if(exercise.UserId == _userManager.GetUserId(User) || User.IsInRole("Admin")) 
+                {
+                    //preluam noile informatii si protejam de cross-scripting
+                    exercise.Title = requestedExercise.Title;
+                    exercise.Description = requestedExercise.Description;
+                    exercise.Summary = requestedExercise.Summary;
+                    exercise.CategoryId = requestedExercise.CategoryId;
+                    exercise.Restrictions = sanitizer.Sanitize(requestedExercise.Restrictions);
+                    exercise.Examples = sanitizer.Sanitize(requestedExercise.Examples);
+                    exercise.Difficulty = requestedExercise.Difficulty;
 
-                db.SaveChanges();
+                    db.SaveChanges();
 
-                TempData["message"] = "The exercise has been modified!";
-                TempData["messageType"] = "alert-success";
-                return Redirect("/Exercises/Index/" + requestedExercise.CategoryId);
+                    TempData["message"] = "The exercise has been modified!";
+                    TempData["messageType"] = "alert-success";
+                    return Redirect("/Exercises/Index/" + requestedExercise.CategoryId);
+                }
+                else
+                {
+                    TempData["message"] = "You're unable to modify an exercise you didn't add!";
+                    TempData["messageType"] = "alert-danger";
+                    return Redirect("/Exercises/Index/" + requestedExercise.CategoryId);
+                }
 
             }
             else
@@ -277,6 +381,7 @@ namespace Developer_Toolbox.Controllers
            
         }
 
+        [Authorize(Roles = "Admin,Editor")]
         [HttpPost]
         public IActionResult Delete(int id)
         {
@@ -287,13 +392,23 @@ namespace Developer_Toolbox.Controllers
             // pentru a ne intoarce la pagina cu exercitiile din categoria exercitiului sters
             int? categoryId = exercise.CategoryId;
 
-            db.Exercises.Remove(exercise);
-            db.SaveChanges();
+            //nu permiterm stergerea exercitiului decat de admin sau de autorul lui
+            if (exercise.UserId == _userManager.GetUserId(User) || User.IsInRole("Admin"))
+            {
+                db.Exercises.Remove(exercise);
+                db.SaveChanges();
+                TempData["message"] = "The exercise has been deleted!";
+                TempData["messageType"] = "alert-danger";
 
-            TempData["Message"] = "The exercise has been deleted!";
-            TempData["MessageType"] = "alert-danger";
-
-            return Redirect("/Exercises/Index/" + categoryId);
+                return Redirect("/Exercises/Index/" + categoryId);
+            }
+            else
+            {
+                TempData["message"] = "You're unable to modify an exercise you didn't add!";
+                TempData["messageType"] = "alert-danger";
+                return Redirect("/Exercises/Index/" + categoryId);
+            }
+                
         }
 
         [NonAction]

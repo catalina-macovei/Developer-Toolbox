@@ -1,5 +1,7 @@
 ﻿using Developer_Toolbox.Data;
 using Developer_Toolbox.Models;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -12,18 +14,55 @@ namespace Developer_Toolbox.Controllers
         private readonly ApplicationDbContext db;
         private IWebHostEnvironment _env;
 
-        public CategoriesController(ApplicationDbContext context, IWebHostEnvironment env)
+        private readonly UserManager<ApplicationUser> _userManager;
+        private readonly RoleManager<IdentityRole> _roleManager;
+        public CategoriesController(ApplicationDbContext context,
+            IWebHostEnvironment environment,
+            UserManager<ApplicationUser> userManager,
+            RoleManager<IdentityRole> roleManager)
         {
             db = context;
-            _env = env;
+            _userManager = userManager;
+            _roleManager = roleManager;
+            _env = environment;
         }
+
+        //Conditii de afisare a butoanelor de editare si stergere
+        private void SetAccessRights()
+        {
+            ViewBag.IsModerator = User.IsInRole("Editor");
+
+            ViewBag.IsAdmin = User.IsInRole("Admin");
+
+            ViewBag.CurrentUser = _userManager.GetUserId(User);
+
+            // verificam daca are profilul complet
+            bool userProfilComplet = false;
+
+            // bool userConectat = false;
+            //if (db.ApplicationUsers.Find(_userManager.GetUserId(User)).FirstName != null)
+            //    userProfilComplet = true;
+
+            if (_userManager.GetUserId(User) != null)
+            {
+                // userConectat = true;
+                if (db.ApplicationUsers.Find(_userManager.GetUserId(User)).FirstName != null)
+                    userProfilComplet = true;
+            }
+            
+            ViewBag.UserProfilComplet = userProfilComplet;
+        }
+
 
         public IActionResult Index()
         {
+            SetAccessRights();
+
             // transmitem mesajele primite in view
             if (TempData.ContainsKey("message"))
             {
-                ViewBag.message = TempData["message"].ToString();
+                ViewBag.Message = TempData["message"];
+                ViewBag.MessageType = TempData["messageType"];
             }
 
 
@@ -47,17 +86,30 @@ namespace Developer_Toolbox.Controllers
             return View(category);
         }
 
+        [Authorize(Roles = "Admin,Editor")]
         public ActionResult New()
         {
+            //transmitem mesajele primite in view
+            if (TempData.ContainsKey("message"))
+            {
+                ViewBag.Message = TempData["message"];
+                ViewBag.MessageType = TempData["messageType"];
+            }
+
             // noua categorie
             Category cat = new Category();
 
             return View(cat);
         }
 
+        [Authorize(Roles = "Admin,Editor")]
         [HttpPost]
         public async Task<IActionResult> New(Category cat, IFormFile file)
         {
+            SetAccessRights();
+
+            cat.UserId = _userManager.GetUserId(User);
+
             // incercam sa uploadam imaginea pentru logo
             var res = await SaveImage(file);
 
@@ -80,6 +132,7 @@ namespace Developer_Toolbox.Controllers
                 db.SaveChanges();
 
                 TempData["message"] = "The category has been added";
+                TempData["messageType"] = "alert-success";
 
                 return RedirectToAction("Index");
             }
@@ -99,14 +152,33 @@ namespace Developer_Toolbox.Controllers
             }
         }
 
+        [Authorize(Roles = "Admin,Editor")]
         public ActionResult Edit(int id)
         {
+            //transmitem mesajele primite in view
+            if (TempData.ContainsKey("message"))
+            {
+                ViewBag.Message = TempData["message"];
+                ViewBag.MessageType = TempData["messageType"];
+            }
+
             // preluam categoria cautata
             Category category = db.Categories.Find(id);
 
-            return View(category);
+            //restrictionam permisiunile
+            if (category.UserId == _userManager.GetUserId(User) || User.IsInRole("Admin"))
+            {
+                return View(category);
+            }
+            else
+            {
+                TempData["message"] = "You're unable to modify a category you didn't add!";
+                TempData["messageType"] = "alert-danger";
+                return RedirectToAction("Index");
+            }
         }
 
+        [Authorize(Roles = "Admin,Editor")]
         [HttpPost]
         public async Task<IActionResult> Edit(int id, Category requestCategory, IFormFile file)
         {
@@ -124,24 +196,35 @@ namespace Developer_Toolbox.Controllers
 
             if (ModelState.IsValid)
             {
-                //stergem imaginea logo anterioara din folder-ul imgs
-                string path = Path.Join(_env.WebRootPath, category.Logo.Replace('/', '\\'));
-                System.IO.File.Delete(path);
-
-                // modificam informatiile
-                category.CategoryName = requestCategory.CategoryName;
-
-                if (file != null && file.Length > 0)
+                if (category.UserId == _userManager.GetUserId(User) || User.IsInRole("Admin"))
                 {
-                    category.Logo = res;
+                    //stergem imaginea logo anterioara din folder-ul imgs
+                    string path = Path.Join(_env.WebRootPath, category.Logo.Replace('/', '\\'));
+                    System.IO.File.Delete(path);
 
+                    // modificam informatiile
+                    category.CategoryName = requestCategory.CategoryName;
+
+                    if (file != null && file.Length > 0)
+                    {
+                        category.Logo = res;
+
+                    }
+
+                    //commit
+                    db.SaveChanges();
+
+                    TempData["message"] = "The category has been edited";
+                    TempData["messageType"] = "alert-success";
+                    return RedirectToAction("Index");
                 }
-
-                //commit
-                db.SaveChanges();
-
-                TempData["message"] = "The category has been edited";
-                return RedirectToAction("Index");
+                else
+                {
+                    TempData["message"] = "You're unable to modify a category you didn't add!";
+                    TempData["messageType"] = "alert-danger";
+                    return RedirectToAction("Index");
+                }
+           
             }
             else
             {
@@ -149,6 +232,7 @@ namespace Developer_Toolbox.Controllers
             }
         }
 
+        [Authorize(Roles = "Admin,Editor")]
         [HttpPost]
         public ActionResult Delete(int id)
         {
@@ -157,19 +241,29 @@ namespace Developer_Toolbox.Controllers
                                              .Where(c => c.Id == id)
                                              .First();
 
-            // stergem imaginea logo din folder-ul imgs
-            string path = Path.Join(_env.WebRootPath, category.Logo.Replace('/', '\\'));
-            System.IO.File.Delete(path);
+            if(category.UserId == _userManager.GetUserId(User) || User.IsInRole("Admin"))
+            {
+                // stergem imaginea logo din folder-ul imgs
+                string path = Path.Join(_env.WebRootPath, category.Logo.Replace('/', '\\'));
+                System.IO.File.Delete(path);
 
-       
-            // stergem categoria din baza de date
-            db.Categories.Remove(category);
+                // stergem categoria din baza de date
+                db.Categories.Remove(category);
 
-            // commit
-            db.SaveChanges();
+                // commit
+                db.SaveChanges();
 
-            TempData["message"] = "The category has been deleted";
-            return RedirectToAction("Index");
+                TempData["message"] = "The category has been deleted";
+                TempData["messageType"] = "alert-success";
+                return RedirectToAction("Index");
+            } 
+            else
+            {
+                TempData["message"] = "You're unable to delete a category you didn't add!";
+                TempData["messageType"] = "alert-danger";
+                return RedirectToAction("Index");
+            }
+            
         }
 
         private async Task<string?> SaveImage(IFormFile file)
