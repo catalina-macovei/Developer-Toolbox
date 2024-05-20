@@ -3,6 +3,10 @@
 
 
 <div class="container py-5">
+    @if (TempData.ContainsKey("message"))
+    {
+        <h4 class="@ViewBag.MessageType p-3 rounded-3 text-center mb-5">@ViewBag.Message</h4>
+    }
     <h2 class="text-center">Add Category</h2>
 
     <div class="row">

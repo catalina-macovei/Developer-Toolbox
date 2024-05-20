@@ -194,6 +194,27 @@ namespace Developer_Toolbox.Controllers
                 saved = true;
             ViewBag.Saved = saved;
 
+            var liked = false;
+            var disliked = false;
+            if (db.Reactions.Any(r => r.UserId == userCurent && r.QuestionId == question.Id))
+            {
+                Reaction reaction = db.Reactions.Where(r => r.UserId == userCurent && r.QuestionId == question.Id).FirstOrDefault();
+                if (reaction != null)
+                {
+                    if (reaction.Liked == false || reaction.Liked == null)
+                        liked = false;
+                    else
+                        liked = true;
+                    if (reaction.Disliked == false || reaction.Disliked == null)
+                        disliked = false;
+                    else
+                        disliked = true;
+                }
+                    
+            }
+            ViewBag.Disliked = disliked;
+            ViewBag.Liked = liked;
+
             ApplicationUser user = db.ApplicationUsers.Where(user => user.Id == question.UserId).FirstOrDefault();
             ViewBag.User = user;
             if (TempData.ContainsKey("message"))
@@ -314,58 +335,5 @@ namespace Developer_Toolbox.Controllers
             return RedirectToAction("Index");
         }
 
-        public IActionResult LikeQuestion(int questionId)
-        {
-            Console.WriteLine("Nr intrebare: " + questionId);
-            var question = db.Questions.Find(questionId);
-            if (question != null)
-            {
-                question.LikesNr++; // Incrementam numărului de like-uri
-                db.SaveChanges();
-                return Redirect("/Questions/Show/" + questionId);// Redirecționam la pagina intrebarii
-            }
-            // Tratam cazul în care întrebarea nu există sau alte erori
-            return NotFound();
-        }
-        public IActionResult DislikeQuestion(int questionId)
-        {
-            Console.WriteLine("Nr intrebare: " + questionId);
-            var question = db.Questions.Find(questionId);
-            if (question != null)
-            {
-                question.DislikesNr++; // Incrementam numărului de dislike-uri
-                db.SaveChanges();
-                return Redirect("/Questions/Show/" + questionId);// Redirecționam la pagina intrebarii
-            }
-            // Tratam cazul în care întrebarea nu există sau alte erori
-            return NotFound();
-        }
-
-        public IActionResult UndoLikeQuestion(int questionId)
-        {
-            Console.WriteLine("Nr intrebare: " + questionId);
-            var question = db.Questions.Find(questionId);
-            if (question != null)
-            {
-                question.LikesNr--; // Decrementam numărului de like-uri
-                db.SaveChanges();
-                return Redirect("/Questions/Show/" + questionId);// Redirecționam la pagina intrebarii
-            }
-            // Tratam cazul în care întrebarea nu există sau alte erori
-            return NotFound();
-        }
-        public IActionResult UndoDislikeQuestion(int questionId)
-        {
-            Console.WriteLine("Nr intrebare: " + questionId);
-            var question = db.Questions.Find(questionId);
-            if (question != null)
-            {
-                question.DislikesNr--; // Decrementam numărului de dislike-uri
-                db.SaveChanges();
-                return Redirect("/Questions/Show/" + questionId);// Redirecționam la pagina intrebarii
-            }
-            // Tratam cazul în care întrebarea nu există sau alte erori
-            return NotFound();
-        }
     }
 }

@@ -28,6 +28,7 @@ namespace Developer_Toolbox.Models
         public virtual ICollection<Answer>? Answers { get; set; }
 
         public virtual ICollection<Bookmark>? Bookmarks { get; set; }
+        public virtual ICollection<Reaction>? Reactions { get; set; }
 
         [NotMapped]
         public IEnumerable<SelectListItem>? AllRoles { get; set; }

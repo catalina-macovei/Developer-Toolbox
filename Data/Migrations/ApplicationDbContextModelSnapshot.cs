@@ -177,6 +177,9 @@ namespace Developer_Toolbox.Data.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(max)");
+
                     b.HasKey("Id");
 
                     b.ToTable("Categories");
@@ -290,6 +293,32 @@ namespace Developer_Toolbox.Data.Migrations
                     b.ToTable("QuestionTags");
                 });
 
+            modelBuilder.Entity("Developer_Toolbox.Models.Reaction", b =>
+                {
+                    b.Property<int>("Id")
+                        .HasColumnType("int");
+
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<int?>("QuestionId")
+                        .HasColumnType("int");
+
+                    b.Property<bool?>("Disliked")
+                        .HasColumnType("bit");
+
+                    b.Property<bool?>("Liked")
+                        .HasColumnType("bit");
+
+                    b.HasKey("Id", "UserId", "QuestionId");
+
+                    b.HasIndex("QuestionId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Reactions");
+                });
+
             modelBuilder.Entity("Developer_Toolbox.Models.Solution", b =>
                 {
                     b.Property<int>("Id")
@@ -303,6 +332,9 @@ namespace Developer_Toolbox.Data.Migrations
 
                     b.Property<int?>("Score")
                         .HasColumnType("int");
+
+                    b.Property<string>("SolutionCode")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("UserId")
                         .HasColumnType("nvarchar(450)");
@@ -549,6 +581,25 @@ namespace Developer_Toolbox.Data.Migrations
                     b.Navigation("Tag");
                 });
 
+            modelBuilder.Entity("Developer_Toolbox.Models.Reaction", b =>
+                {
+                    b.HasOne("Developer_Toolbox.Models.Question", "Question")
+                        .WithMany("Reactions")
+                        .HasForeignKey("QuestionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Developer_Toolbox.Models.ApplicationUser", "User")
+                        .WithMany("Reactions")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Question");
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("Developer_Toolbox.Models.Solution", b =>
                 {
                     b.HasOne("Developer_Toolbox.Models.Exercise", "Exercise")
@@ -625,6 +676,8 @@ namespace Developer_Toolbox.Data.Migrations
 
                     b.Navigation("Questions");
 
+                    b.Navigation("Reactions");
+
                     b.Navigation("Solutions");
                 });
 
@@ -645,6 +698,8 @@ namespace Developer_Toolbox.Data.Migrations
                     b.Navigation("Bookmarks");
 
                     b.Navigation("QuestionTags");
+
+                    b.Navigation("Reactions");
                 });
 
             modelBuilder.Entity("Developer_Toolbox.Models.Tag", b =>
