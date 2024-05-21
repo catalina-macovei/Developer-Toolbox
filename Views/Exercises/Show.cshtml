@@ -1,11 +1,12 @@
 ﻿@model Developer_Toolbox.Models.Exercise
 
-<section style="display: grid; grid-template-areas: 'Cerinta Editor Editor Editor'">
+<section>
     @if (TempData.ContainsKey("message"))
     {
         <h4 class="@ViewBag.MessageType p-3 rounded-3 text-center mb-5">@ViewBag.Message</h4>
     }
-    <div class="m-5" style="grid-area: Cerinta">
+    <div style="display: flex">
+        <div class="m-5" style="width: 70%">
         <div class="card product">
             <div class="bg-image hover-zoom ripple" data-mdb-ripple-color="light">
                 <div>
@@ -65,10 +66,16 @@
 
     </div>
 
-    <div id="editor" style="grid-area: Editor">def myFunc(): {
-        print("Hello World!")
-    }</div>
-    <button formaction="/Exercises/Show" id="submit" class="btn btn-success" type="submit">Submit</button>
+    @if(ViewBag.CurrentUser != null)
+    {
+        <section class="m-5" style="width: 100%; display: flex; flex-direction: column">
+            <div id="editor" style="height: 100%">def myFunc():
+  print("Hello World!")
+    </div>
+            <button formaction="/Exercises/Show" id="submit" class="btn btn-success" type="submit">Submit</button>
+        </section>
+    }
+    </div>
    
 </section>
 

@@ -188,7 +188,7 @@ namespace Developer_Toolbox.Controllers
         [Authorize(Roles = "User,Editor,Admin")]
         public IActionResult Show(string id, string x)
         {
-            // TODO: in view preia codul din editor pentru SolutionCode
+ 
             // TODO: calculeaza scorul in functie de rezultatele testarii
             Solution solution = new Solution();
             solution.SolutionCode = x;
@@ -206,7 +206,7 @@ namespace Developer_Toolbox.Controllers
                 TempData["messageType"] = "alert-success";
 
                 // TODO: depinde unde afisam rezultatele testarii
-                return Redirect("/Solutions/Show/" + solution.Id);
+                return Redirect("/Solutions/Index");
             }
             else
             {
