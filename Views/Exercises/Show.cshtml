@@ -43,7 +43,6 @@
                     <h6>Examples</h6>
                     <div class="card-text">@Html.Raw(Model.Examples)</div>
                 </div>
-
             </div>
             @if (ViewBag.CurrentUser == Model.UserId || ViewBag.IsAdmin)
             {
@@ -62,14 +61,33 @@
 
         </div>
 
-
+        <div id="success-message" class="card d-none text-center text-success mt-2">
+            <h1>Success!</h1>
+            <p>All tests passed</p>
+        </div>
     </div>
 
-    <div id="editor" style="grid-area: Editor">def myFunc(): {
-        print("Hello World!")
-    }</div>
+    <div id="editor" class="my-5 mx-2" style="grid-area: Editor">def add(x,y):   
+    return x + y
+    </div>
+    <br />
     <button formaction="/Exercises/Show" id="submit" class="btn btn-success" type="submit">Submit</button>
-   
+    <br />
+    @if (!string.IsNullOrEmpty(ViewBag.Result))
+    {
+        <div>
+            <h3>Execution Result:</h3>
+            <pre>@ViewBag.Result</pre>
+        </div>
+    }
+
+    @if (!string.IsNullOrEmpty(ViewBag.Error))
+    {
+        <div>
+            <h3>Error:</h3>
+            <pre>@ViewBag.Error</pre>
+        </div>
+    }
 </section>
 
 <script type="text/javascript">
@@ -77,9 +95,27 @@
     const element = document.getElementById("submit");
     element.addEventListener("click", getCode);
 
-    function getCode() {
+    async function getCode() {
         var data = editor.getValue();
-        $.post("/Exercises/ExecuteCode", { id: @Model.Id, solution: data });
+        try {
+            const res = await $.post("/Exercises/ExecuteCode", { id: @Model.Id, solution: data });
+            if (res.status === 200) {
+                showSuccess()
+            } else {
+                console.log("fail")
+            }
+            console.log(res.status)
+        } catch (err) {
+            console.log(err)
+        }
+        
+        console.log('not awaited')
     }
 
+    function showSuccess() {
+        const successContainer = document.getElementById('success-message');
+        if (successContainer) {
+            successContainer.classList.toggle('d-none');
+        }
+    }
 </script>

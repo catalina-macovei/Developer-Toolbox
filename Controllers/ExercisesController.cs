@@ -437,10 +437,10 @@ namespace Developer_Toolbox.Controllers
             {
                 var jsonResponse = await response.Content.ReadAsStringAsync();
                 var result = JsonConvert.DeserializeObject<Dictionary<string, string>>(jsonResponse);
-                return Json(result);
+                return Json(new { status = 200, data = result }); // Return the result with status 200 OK
             }
 
-            return Json(new { error = "Error processing request" });
+            return BadRequest(new { error = "Error processing request" });
         }
 
         [NonAction]
