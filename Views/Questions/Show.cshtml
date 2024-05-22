@@ -1,0 +1,182 @@
+﻿<br />
+<div class="container">
+    <div class="d-flex justify-content-start flex-row mt-10">
+        
+        <a class="btn btn-outline-primary py-sm-3 px-sm-4 rounded-pill me-3" style="font-weight:bold;" href="/Questions/Index/">
+              <i class="bi bi-arrow-return-left"></i> Back to questions
+        </a>
+
+        <div class="ms-auto">
+            <i class="bi bi-person"></i> <i>@ViewBag.Question.User.UserName</i>
+        </div>
+
+    </div>
+    @if (TempData["message"] != null)
+    {
+        <br />
+        <div class="alert p-3 rounded-3 text-center mb-5 @ViewBag.Alert">
+            @ViewBag.Message
+        </div>
+    }
+    <br />
+    <br />
+    <div class="row">
+
+        <div>
+
+            <div class="card">
+                <!-- Partea de întrebare -->
+                <div class="card-body">
+                    
+                    <a href="/ApplicationUsers/Show/@ViewBag.User.Id" style="text-decoration: none;">
+                        <h3 class="card-title alert-primary py-3 px-3 rounded-2">@ViewBag.User.FirstName @ViewBag.User.LastName</h3>
+                    </a>
+                    
+                    <div class="card-title alert-secondary py-3 px-3 rounded-2"><h3>@ViewBag.Question.Title</h3></div>
+                    <br />
+                    <div class="card-text">@ViewBag.Question.Description</div>
+                    <br /><br />
+
+                    <div class="d-flex flex-row mt-5" style="margin-bottom:0">
+                        <small class="alert-secondary text-center">@ViewBag.Question.CreatedDate</small>
+                    </div>
+                    
+                    <div >
+                        @if (@ViewBag.Question.UserId == ViewBag.UserCurent || ViewBag.EsteAdmin)
+                        {
+                            <br />
+                            <div style="display:flex; justify-content: space-between;">
+                                <a asp-action="Edit" asp-controller="Questions" asp-route-id="@ViewBag.Question.Id">
+                                    <svg style="width:20px; height:20px;" fill="none" stroke="#FF0000" stroke-width="1.5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10"></path>
+                                    </svg>
+                                </a>
+                                <form method="post" asp-action="Delete" asp-controller="Questions" asp-route-id="@ViewBag.Question.Id">
+                                    <button type="submit" class="btn btn-no-outline">
+                                        <svg style="width:20px; height:20px;" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="#FF0000">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0" />
+                                        </svg>
+                                    </button>
+                                </form>
+                            </div>
+                        }
+                    </div>
+                    @if (User.Identity.IsAuthenticated)
+                    {
+                        <div class="d-flex justify-content-between flex-row mt-5">
+                            @if (ViewBag.Saved == false)
+                            {
+                                <a class="btn btn-outline-primary px-3 rounded-pill mb-3" href="/Bookmarks/Save?questionId=@ViewBag.Question.Id">Save</a>
+                            }
+                            else
+                            {
+                                <a class="btn btn-secondary px-3 rounded-pill mb-3" href="/Bookmarks/Unsave?questionId=@ViewBag.Question.Id">Unsave</a>
+                            }
+
+                            <div class="d-flex flex-row justify-content-end">
+                                @if(!ViewBag.Liked)
+                                {
+                                    <!-- Buton pentru like -->
+                                    <form method="post" action="/Reactions/LikeQuestion?questionId=@ViewBag.Question.Id">
+                                        <button type="submit" class="btn btn-light btn-outline-primary px-3 rounded-pill mb-3">Like @ViewBag.Question.LikesNr</button>
+                                    </form>
+                                }
+                                else
+                                {
+                                    <!-- Buton pentru undoLike -->
+                                    <form method="post" action="/Reactions/UndoLikeQuestion?questionId=@ViewBag.Question.Id">
+                                        <button type="submit" class="btn btn-primary px-3 rounded-pill mb-3 ">Liked @ViewBag.Question.LikesNr</button>
+                                    </form>
+                                }
+                                @if(!ViewBag.Disliked)
+                                {
+                                    <!-- Buton pentru dislike -->
+                                    <form method="post" action="/Reactions/DislikeQuestion?questionId=@ViewBag.Question.Id">
+                                        <button type="submit" class="btn btn-light btn-outline-danger px-3 rounded-pill mb-3">Dislike @ViewBag.Question.DislikesNr</button>
+                                    </form>
+                                }
+                                else
+                                {
+                                    <!-- Buton pentru UndoDislike -->
+                                    <form method="post" action="/Reactions/UndoDislikeQuestion?questionId=@ViewBag.Question.Id">
+                                        <button type="submit" class="btn btn-danger px-3 rounded-pill mb-3">Disliked @ViewBag.Question.DislikesNr</button>
+                                    </form>
+                                }
+                            </div>
+
+                        </div>
+
+
+                    }
+                    
+                </div>
+
+
+            </div>
+
+            <br />
+            <br />
+
+            <div class="card">
+                <!-- Raspunsuri -->
+                @foreach (var comm in ViewBag.QuestionWithAnswers)
+                {
+                    <div>
+                        <div class="card-body">
+                            <a href="/ApplicationUsers/Show/@comm.AutorId" style="text-decoration: none;">
+                                <h6>@comm.AutorFirstName @comm.AutorLastName</h6>
+                            </a>
+                            
+                            <div>
+                                <p>@comm.Answer.Content</p>
+
+                            </div>
+
+                            <div>
+
+                                <small class="alert-secondary text-center" style="margin-bottom:0">@comm.Answer.Date</small>
+                                
+                                @if (@comm.Answer.UserId == ViewBag.UserCurent || ViewBag.EsteAdmin)
+                                {
+                                    <div style="display:flex; justify-content: space-between;">
+                                        <a asp-action="Edit" asp-controller="Answers" asp-route-id="@comm.Answer.Id">
+                                            <svg style="width:20px; height:20px;" fill="none" stroke="#FF0000" stroke-width="1.5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                                                <path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10"></path>
+                                            </svg>
+                                        </a>
+                                        <form method="post" asp-action="Delete" asp-controller="Answers" asp-route-id="@comm.Answer.Id">
+                                            <button type="submit" class="btn btn-no-outline">
+                                                <svg style="width:20px; height:20px;" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="#FF0000">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0" />
+                                                </svg>
+                                            </button>
+                                        </form>
+                                    </div>
+                                }
+                                
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+            <!-- Formular adaugare comentariu -->
+            <div class="card mt-3">
+                <form method="post" action="/Answers/New">
+                    <div class="card-body">
+                        <input type="hidden" name="QuestionId" value="@ViewBag.Question.Id" />
+                        <label>Content</label>
+                        <br />
+                        <textarea class="form-control" name="Content"></textarea>
+                        <br />
+                        <button class="btn btn-primary px-3 rounded-pill mb-3" type="submit">Answer</button>
+                    </div>
+                </form>
+            </div>
+
+        </div>
+
+        <div class="col-md-2"></div>
+
+    </div>
+
+</div>

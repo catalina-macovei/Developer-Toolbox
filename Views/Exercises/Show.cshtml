@@ -1,0 +1,121 @@
+﻿@model Developer_Toolbox.Models.Exercise
+
+<section style="display: grid; grid-template-areas: 'Cerinta Editor Editor Editor'">
+    @if (TempData.ContainsKey("message"))
+    {
+        <h4 class="@ViewBag.MessageType p-3 rounded-3 text-center mb-5">@ViewBag.Message</h4>
+    }
+    <div class="m-5" style="grid-area: Cerinta">
+        <div class="card product">
+            <div class="bg-image hover-zoom ripple" data-mdb-ripple-color="light">
+                <div>
+                    <div class="hover-overlay">
+                        <div class="mask" style="background-color: rgba(251, 251, 251, 0.15);"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card-body">
+                <div href="" class="text-reset">
+                    <h5 class="card-title mb-3">@Model.Title</h5>
+                </div>
+
+                <div>
+                    <h6>@Model.Category.CategoryName</h6>
+                    <h6><small>Posted on: @Model.Date</small></h6>
+                    @if (ViewBag.CompleteProfile)
+                    {
+                        <h6><small>Posted by: @Model.User.FirstName @Model.User.LastName</small></h6>
+                    }
+                </div>
+
+                <div>
+                    <h6>Instructions</h6>
+                    <p>@Model.Description</p>
+                </div>
+
+                <div>
+                    <h6>Restrictions</h6>
+                    <div class="card-text">@Html.Raw(Model.Restrictions)</div>
+                </div>
+
+                <div>
+                    <h6>Examples</h6>
+                    <div class="card-text">@Html.Raw(Model.Examples)</div>
+                </div>
+            </div>
+            @if (ViewBag.CurrentUser == Model.UserId || ViewBag.IsAdmin)
+            {
+                <div class="d-flex align-items-center justify-content-between m-2">
+
+                    <a class="btn alert-success" href="/Exercises/Edit/@Model.Id">Edit Exercise</a>
+
+                    <form method="post" action="/Exercises/Delete/@Model.Id">
+
+                        <button class="btn btn-danger" type="submit">Delete Exercise</button>
+
+                    </form>
+
+                </div>
+            }
+
+        </div>
+
+        <div id="success-message" class="card d-none text-center text-success mt-2">
+            <h1>Success!</h1>
+            <p>All tests passed</p>
+        </div>
+    </div>
+
+    <div id="editor" class="my-5 mx-2" style="grid-area: Editor">def add(x,y):   
+    return x + y
+    </div>
+    <br />
+    <button formaction="/Exercises/Show" id="submit" class="btn btn-success" type="submit">Submit</button>
+    <br />
+    @if (!string.IsNullOrEmpty(ViewBag.Result))
+    {
+        <div>
+            <h3>Execution Result:</h3>
+            <pre>@ViewBag.Result</pre>
+        </div>
+    }
+
+    @if (!string.IsNullOrEmpty(ViewBag.Error))
+    {
+        <div>
+            <h3>Error:</h3>
+            <pre>@ViewBag.Error</pre>
+        </div>
+    }
+</section>
+
+<script type="text/javascript">
+
+    const element = document.getElementById("submit");
+    element.addEventListener("click", getCode);
+
+    async function getCode() {
+        var data = editor.getValue();
+        try {
+            const res = await $.post("/Exercises/ExecuteCode", { id: @Model.Id, solution: data });
+            if (res.status === 200) {
+                showSuccess()
+            } else {
+                console.log("fail")
+            }
+            console.log(res.status)
+        } catch (err) {
+            console.log(err)
+        }
+        
+        console.log('not awaited')
+    }
+
+    function showSuccess() {
+        const successContainer = document.getElementById('success-message');
+        if (successContainer) {
+            successContainer.classList.toggle('d-none');
+        }
+    }
+</script>

@@ -1,0 +1,28 @@
+﻿@model Developer_Toolbox.Models.Tag
+<section class="p-3">
+<h1>Tags:</h1>
+
+<br/>
+
+<div class="card w-50">
+    <a asp-action="Show" asp-controller="Tags" asp-route-id="@Model.Id" style="text-decoration: none; outline: none;">
+        <div class="card-header">
+            <h3 style="color:black;">Tag: @Model.Name </h3>
+        </div>
+    </a>
+</div>
+<br/>
+<h3>Related Questions</h3>
+<br/>
+<ul>
+    @foreach (var questionTag in Model.QuestionTags)
+    {
+        <li>
+            <a href="/Questions/Show/@questionTag.Question.Id" style="text-decoration: none; outline: none;">
+                @questionTag.Question.Title
+            </a>
+        </li>
+    }
+</ul>
+
+</section>

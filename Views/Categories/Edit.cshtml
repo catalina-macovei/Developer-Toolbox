@@ -1,0 +1,41 @@
+﻿@model Developer_Toolbox.Models.Category
+
+
+<div class="container py-5">
+    @if (TempData.ContainsKey("message"))
+    {
+        <h4 class="@ViewBag.MessageType p-3 rounded-3 text-center mb-5">@ViewBag.Message</h4>
+    }
+    <h2 class="text-center">Edit Category</h2>
+
+    <div class="row">
+        <div class="col-6 offset-3">
+            <form class="d-flex flex-column gap-3 overflow-auto" method="post" enctype="multipart/form-data" action="/Categories/Edit/@Model.Id">
+                <div>
+                    @Html.Label("CategoryName", "Category Name")
+
+                    @Html.TextBox("CategoryName", null, new { @class = "form-control" })
+
+                    @Html.ValidationMessageFor(m => m.CategoryName, null, new{@class = "text-danger"})
+
+                    <div>
+                        <label for="file">Upload Logo</label>
+                        <input type="file" id="file" name="file" style="margin:1em"/>
+                        <br/>
+                        @Html.ValidationMessage("Logo", null, new { @class = "text-danger" })
+                    </div>
+
+                </div>
+                <button class="btn btn-outline" style="background-color:#0d6efd; color:white;" type="submit">Save changes</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+
+

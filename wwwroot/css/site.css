@@ -16,3 +16,43 @@ html {
 body {
   margin-bottom: 60px;
 }
+
+
+.navbar .nav-item:hover .dropdown-menu {
+    top: 100%;
+    visibility: visible;
+    transition: .5s;
+    opacity: 1;
+}
+
+
+/*
+    Hero header
+*/
+
+.hero-header {
+    background: url(~/imgs/bg-hero.png) center center no-repeat;
+    background-size: cover;
+}
+
+.hero-header .breadcrumb-item + .breadcrumb-item::before {
+    color: var(--light);
+}
+@media (min-width: 992px) {
+    .container {
+        max-width: 100% !important;
+    }
+}
+
+
+.note-editor .dropdown-toggle::after {
+    display: none;
+}
+
+#editor {
+    position: relative;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+}

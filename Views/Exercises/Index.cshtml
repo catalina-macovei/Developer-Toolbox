@@ -1,0 +1,103 @@
+﻿
+<section class="p-3">
+
+    @if (TempData.ContainsKey("message"))
+    {
+        <h4 class="@ViewBag.MessageType p-3 rounded-3 text-center mb-5">@ViewBag.Message</h4>
+    }
+
+    <div class="d-flex justify-content-between">
+        <h1 class="">Exercises:</h1>
+        @if(ViewBag.IsModerator || ViewBag.IsAdmin)
+        {
+            <a class="btn btn-outline-primary py-sm-3 px-sm-4 rounded-pill me-3" style="font-weight:bold;" href="/Exercises/New" role="button"> + Add Exercise</a>
+        }
+    </div>
+
+    <br />
+    <br />
+
+    <div class="d-flex flex-column gap-1" style="display:flex; align-items:center; max-width: 100em">
+        <form method="GET" class="" id="filterForm">
+            <div class="input-group">
+                <input type="text" class="form-control" placeholder="Search exercises" name="search" value="@ViewBag.SearchString">
+                <button class="btn" type="submit" style="background-color:#0d6efd; color:white">
+                    Search
+                </button>
+            </div>
+            <div class="d-flex gap-1 justify-content-start mt-2">
+                <label>Sort by difficulty:</label>
+                @Html.DropDownList(
+                "SelectedDifficultyOption",
+                (IEnumerable<SelectListItem>)ViewBag.DifficultyOptionsSelectList,
+                "Select",
+                new { @class = "form-control" }
+                )
+            </div>
+        </form>
+    </div>
+
+    <br />
+    <br />
+    <div class="container">
+        <div class="row row-cols-1 row-cols-md-2 g-3">
+            @foreach (var exercise in ViewBag.Exercises)
+            {
+                <div class="col">
+                    <div class="card">
+                        <a asp-action="Show" asp-controller="Exercises" asp-route-id="@exercise.Id" style="text-decoration: none; outline: none;">
+                            <div class="card-header d-flex" style="justify-content: space-between; align-items: center">
+                                <h3 style="color:black;">@exercise.Title</h3>
+                                <span class="badge badge-primary" style="background-color:#0d6efd">@exercise.Difficulty</span>
+                            </div>
+                        </a>
+                        <div class="card-body">
+                            <h5 class="card-title">@exercise.Summary</h5>
+                            @if(exercise.UserId == ViewBag.CurrentUser || ViewBag.IsAdmin)
+                            {
+                                <div style="display:flex; justify-content: space-between;">
+                                    <a asp-action="Edit" asp-controller="Exercises" asp-route-id="@exercise.Id">
+                                        <svg style="width:20px; height:20px;" fill="none" stroke="#FF0000" stroke-width="1.5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10"></path>
+                                        </svg>
+                                    </a>
+                                    <form method="post" asp-action="Delete" asp-controller="Exercises" asp-route-id="@exercise.Id">
+                                        <button type="submit" class="btn btn-no-outline">
+                                            <svg style="width:20px; height:20px;" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="#FF0000">
+                                                <path stroke-linecap="round" stroke-linejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0" />
+                                            </svg>
+                                        </button>
+                                    </form>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+
+    <br />
+    <br />
+
+    <div class=" mb-2 ">
+        <nav aria-label="Page navigation" style="color:#0d6efd">
+            <ul class="pagination">
+                <li class="page-item">
+                    <a class="page-link" style="color:#0d6efd" href="/Exercises/Index/@ViewBag.CategoryId?page=1&@ViewBag.QueryString" aria-label="Previous">
+                        <span aria-hidden="true">&laquo;</span>
+                    </a>
+                </li>
+                @for (int i = 1; i <= ViewBag.lastPage; i++)
+                {
+                    <li class="page-item"> <a class="page-link" style="color:#0d6efd" href="/Exercises/Index/@ViewBag.CategoryId?page=@i&@ViewBag.QueryString">@(i)</a> </li>
+                }
+                <li class="page-item">
+                    <a class="page-link" style="color:#0d6efd" href="/Exercises/Index/@ViewBag.CategoryId?page=@(ViewBag.lastPage)&@ViewBag.QueryString" aria-label="Next">
+                        <span aria-hidden="true">&raquo;</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+    </div>
+</section>

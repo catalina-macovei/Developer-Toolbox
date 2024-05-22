@@ -1,0 +1,61 @@
+﻿@model Developer_Toolbox.Models.ApplicationUser
+@{
+    ViewBag.Title = "Edit";
+}
+
+<br />
+<h2>Edit Profile <i class="bi bi-pencil-square"></i></h2>
+<hr/>
+
+@using (Html.BeginForm(actionName: "Edit", controllerName: "ApplicationUsers",
+                  method: FormMethod.Post,
+                  routeValues: new { id = Model.Id }))
+{
+    <div class="row mb-3">
+        <b>  @Html.Label("FirstName", "First Name") </b>
+        <div class="col-sm-3">
+            @Html.Editor("FirstName", new { htmlAttributes = new { @class = "form-control" } })
+            @Html.ValidationMessageFor(m => m.FirstName, null, new { @class = "text-danger" })
+        </div>
+    </div>
+
+    <div class="row mb-3">
+        <b>
+            @Html.Label("LastName", "Last Name")
+        </b>
+        <div class="col-sm-3">
+            @Html.Editor("LastName", new { htmlAttributes = new { @class = "form-control" } })
+            @Html.ValidationMessageFor(m => m.LastName, null, new { @class = "text-danger" })
+        </div>
+    </div>
+
+    <div class="row mb-3">
+        <b>
+            @Html.Label("Description", "Description")
+        </b>
+        <div class="col-sm-5">
+            @Html.Editor("Description", new { htmlAttributes = new { @class = "form-control" } })
+            @Html.ValidationMessageFor(m => m.Description, null, new { @class = "text-danger" })
+        </div>
+    </div>
+
+
+    <div class="row mb-3">
+        <b>
+            @Html.Label("Birthday", "Birthday")
+        </b>
+        <div class="col-sm-5">
+            @Html.Editor("Birthday", new { htmlAttributes = new { @class = "form-control" } })
+            @Html.ValidationMessageFor(m => m.Description, null, new { @class = "text-danger" })
+        </div>
+    </div>
+
+
+    <br />
+
+
+    <span style="color: white;">aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa</span>
+    <button class="btn btn-primary" type="submit">Apply Changes</button>
+
+
+}

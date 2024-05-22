@@ -1,0 +1,55 @@
+﻿<section class="p-3">
+    @if (TempData.ContainsKey("message"))
+    {
+        <h4 class="@ViewBag.MessageType p-3 rounded-3 text-center mb-5">@ViewBag.Message</h4>
+    }
+
+    <div class="d-flex justify-content-between">
+        <h1 class="">Categories:</h1>
+        @if(ViewBag.IsAdmin || ViewBag.IsModerator)
+        {
+            <a class="btn btn-outline-primary py-sm-3 px-sm-4 rounded-pill me-3" style="font-weight:bold;" href="/Categories/New" role="button"> + Add Category</a>
+        }
+    </div>
+
+    <br />
+    <br />
+    <div class="container">
+        <div class="row row-cols-1 row-cols-md-2 g-3" style="">
+            @foreach (var category in ViewBag.Categories)
+            {
+                <div class="card mb-3 ml-2" style="max-width: 540px; margin-left:5px!important;">
+                    <div class="row g-0">
+                        <div class="col-md-4">
+                            <img src="@category.Logo" class="img-fluid rounded-start" alt="...">
+                        </div>
+                        <div class="col-md-8">
+                            <div class="card-body">
+                                <a href="/Exercises/Index/@category.Id" class="card-title">@category.CategoryName</a>
+
+                                @*if the user is the moderator that created the category or the admin is allowed to edit and delete*@
+                                @if (category.UserId == ViewBag.CurrentUser || ViewBag.IsAdmin)
+                                {
+                                    <div style="display:flex; justify-content: space-between;">
+                                        <a asp-action="Edit" asp-controller="Categories" asp-route-id="@category.Id">
+                                            <svg style="width:20px; height:20px;" fill="none" stroke="#FF0000" stroke-width="1.5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                                                <path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10"></path>
+                                            </svg>
+                                        </a>
+                                        <form method="post" asp-action="Delete" asp-controller="Categories" asp-route-id="@category.Id">
+                                            <button type="submit" class="btn btn-no-outline">
+                                                <svg style="width:20px; height:20px;" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="#FF0000">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0" />
+                                                </svg>
+                                            </button>
+                                        </form>
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</section>
