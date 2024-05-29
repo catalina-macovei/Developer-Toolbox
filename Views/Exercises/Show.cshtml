@@ -100,7 +100,12 @@
         try {
             const res = await $.post("/Exercises/ExecuteCode", { id: @Model.Id, solution: data });
             if (res.status === 200) {
-                showSuccess()
+                const result = JSON.parse(res.data); // parsare JSON string in javascript object
+                console.log("Parsed result:", result); 
+                console.log("Test case 1 - Success:", result['1'].success);
+                console.log("Test case 2 - Success:", result['2']['success']); 
+
+                showSuccess(result)
             } else {
                 console.log("fail")
             }
@@ -112,10 +117,34 @@
         console.log('not awaited')
     }
 
-    function showSuccess() {
+    function showSuccess(result) {
         const successContainer = document.getElementById('success-message');
         if (successContainer) {
+            successContainer.innerHTML = '';
+            if (result) {
+                Object.keys(result).forEach(key => {
+                    const test = result[key];
+                    const testElement = document.createElement('div');
+                    testElement.textContent = `Test case ${key}: ${test.success ? 'Passed' : 'Failed'}`;
+                    testElement.classList.add(test.success ? 'text-success' : 'text-danger');
+                    successContainer.appendChild(testElement);
+
+                    if (!test.success) {
+                        // Daca testele au esuat, afisez expected output
+                        const expectedOutputElement = document.createElement('div');
+                        expectedOutputElement.textContent = `Expected output: ${test.expected_output}`;
+                        successContainer.appendChild(expectedOutputElement);
+                    }
+                });
+            } else {
+                const messageElement = document.createElement('div');
+                messageElement.textContent = 'Tests executed successfully.';
+                successContainer.appendChild(messageElement);
+            }
             successContainer.classList.toggle('d-none');
         }
     }
+
+
+
 </script>
