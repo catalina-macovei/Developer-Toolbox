@@ -35,7 +35,7 @@
                     @Html.ValidationMessage("Summary", null, new { @class = "text-danger" })
                 </div>
                 <div>
-                    @Html.Label("Description", "Exercise Decription")
+                    @Html.Label("Description", "Exercise Description")
 
                     @Html.TextArea("Description", null, new { @class = "form-control"})
                     @Html.ValidationMessage("Description", null, new { @class = "text-danger" })
@@ -52,6 +52,12 @@
                     @Html.TextArea("Examples", null, new { @class = "summernote" })
                     @Html.ValidationMessage("Examples", null, new { @class = "text-danger" })
                 </div>
+                <div>
+                    @Html.Label("Test Cases")
+
+                    @Html.TextArea("TestCases", null, new { @class = "form-control"})
+                    @Html.ValidationMessage("TestCases", null, new { @class = "text-danger" })
+                </div>
                 
                 <div class="d-flex gap-1 justify-content-start mt-2">
                     @Html.Label("Level of difficulty")
@@ -63,28 +69,7 @@
                     )
                 </div>
                 
-                @*
-                    pentru fisiere input output
-                <div>
-                    <div>
-                        <label for="file">Upload Photo</label>
-                        <input type="file" id="file" name="file" />
-
-                    </div>
-                    @Html.ValidationMessage("PhotoSrc", null, new { @class = "text-danger" })
-                </div>
                 
-                @if (User.IsInRole("Admin"))
-                {
-                    <button class="btn btn-outline" style="background-color:pink; color:black;" type="submit">Add Product</button>
-
-                }
-                @if (User.IsInRole("Collaborator"))
-                {
-                    <button class="btn btn-outline" style="background-color:pink; color:black;" type="submit">Request to Add</button>
-
-                }
-                *@
                 <button class="btn btn-outline" style="background-color:#eee; color:black;" type="submit">Add Exercise</button>
             </form>
         </div>

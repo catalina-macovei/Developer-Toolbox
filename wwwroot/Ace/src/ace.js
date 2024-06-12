@@ -13944,7 +13944,7 @@ var Editor = /** @class */ (function () {
         this.session = session;
         if (session) {
             this.$onDocumentChange = this.onDocumentChange.bind(this);
-            session.on("change", this.$onDocumentChange);
+            this.session.on("change", this.$onDocumentChange);
             this.renderer.setSession(session);
             this.$onChangeMode = this.onChangeMode.bind(this);
             session.on("changeMode", this.$onChangeMode);
