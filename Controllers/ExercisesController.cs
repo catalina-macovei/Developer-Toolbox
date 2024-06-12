@@ -466,8 +466,8 @@ namespace Developer_Toolbox.Controllers
             if (response.IsSuccessStatusCode)
             {
                 var jsonResponse = await response.Content.ReadAsStringAsync();
-                var result = JsonConvert.DeserializeObject<Dictionary<string, string>>(jsonResponse);
-                return Json(new { status = 200, data = result }); // Return the result with status 200 OK
+                var result = JsonConvert.DeserializeObject<Dictionary<string, object>>(jsonResponse);
+                return Json(new { status = 200, data = result["result"] }); // Return the result with status 200 OK
             }
 
             return BadRequest(new { error = "Error processing request" });
