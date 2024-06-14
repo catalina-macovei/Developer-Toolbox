@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using System.Net.Http;
 using System.Text;
 using System.Web;
@@ -422,6 +423,11 @@ namespace Developer_Toolbox.Controllers
         [HttpPost]
         public async Task<IActionResult> ExecuteCode(int id, string solution)
         {
+            Solution solution1 = new Solution();
+            solution1.ExerciseId = id;
+            solution1.SolutionCode = solution;
+            solution1.UserId = _userManager.GetUserId(User);
+
             var request = new
             {
                 id = id,
@@ -431,15 +437,65 @@ namespace Developer_Toolbox.Controllers
             var jsonRequest = JsonConvert.SerializeObject(request);
             var httpContent = new StringContent(jsonRequest, Encoding.UTF8, "application/json");
 
-            var response = await _httpClient.PostAsync("http://localhost:8000/execute", httpContent);
-
-            if (response.IsSuccessStatusCode)
+            try
             {
-                var jsonResponse = await response.Content.ReadAsStringAsync();
-                var result = JsonConvert.DeserializeObject<Dictionary<string, object>>(jsonResponse);
-                return Json(new { status = 200, data = result["result"] }); // Return the result with status 200 OK
+                var response = await _httpClient.PostAsync("http://localhost:8000/execute", httpContent);
+
+                if (response.IsSuccessStatusCode)
+                {
+                    var jsonResponse = await response.Content.ReadAsStringAsync();
+                    var result = JsonConvert.DeserializeObject<Dictionary<string, object>>(jsonResponse);
+
+                    int passedTests = 0;
+                    int failedTests = 0;
+
+                    /*
+                    foreach (var test in result)
+                    {
+                        var testResult = (JObject)test.Value;
+                        if (testResult["success"].Value<bool>())
+                        {
+                            passedTests++;
+                        }
+                        else
+                        {
+                            failedTests++;
+                        }
+                    }*/
+
+                    int totalTests = passedTests + failedTests;
+                    if (totalTests > 0)
+                    {
+                        int score = passedTests / totalTests * 100;
+                        solution1.Score = score;
+                    }
+                    else
+                    {
+                        solution1.Score = 0; // Handle case where there are no tests
+                    }
+
+                    Console.WriteLine(result.ToString());
+
+                    db.Add(solution1);
+                    db.SaveChanges();
+                    return Json(new { status = 200, data = result["result"] }); // Return the result with status 200 OK
+                }
+                else
+                {
+                    // Log the response status and content for debugging
+                    var errorContent = await response.Content.ReadAsStringAsync();
+                    Console.WriteLine($"Error response from backend: {response.StatusCode} - {errorContent}");
+                }
+            }
+            catch (Exception ex)
+            {
+                // Log the exception for debugging
+                Console.WriteLine($"Exception occurred: {ex.Message}");
+                return StatusCode(500, new { error = "Internal server error" });
             }
 
+            db.Add(solution1);
+            db.SaveChanges();
             return BadRequest(new { error = "Error processing request" });
         }
 

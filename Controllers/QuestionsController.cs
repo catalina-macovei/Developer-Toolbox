@@ -309,9 +309,6 @@ namespace Developer_Toolbox.Controllers
                 TempData["messageType"] = "alert-primary";
 
                 return Redirect("/Questions/Index");
-               
-
-
             }
             else
             {
