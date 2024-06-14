@@ -66,10 +66,15 @@
             <p>All tests passed</p>
         </div>
     </div>
-    <div id="editor" class="my-5 mx-2" style="grid-area: Editor">def add(x,y):   
-    return x + y
-    </div>
+
+    <div id="editor" class="my-5 mx-2" style="grid-area: Editor"></div>
     <br />
+    <div class="d-flex gap-1 justify-content-start mt-2">
+        @Html.DropDownList("ProgrammingLanguage",
+        (IEnumerable<SelectListItem>)ViewBag.ProgrammingLanguagesList,
+        new { @class = "form-control", @id = "langList" }
+        )
+    </div>
     <button formaction="/Exercises/Show" id="submit" class="btn btn-success" type="submit">Submit</button>
     <br />
     @if (!string.IsNullOrEmpty(ViewBag.Result))
@@ -89,20 +94,29 @@
     }
 </section>
 
-<script type="text/javascript">
+<script>
+    var editor = ace.edit("editor");
+    const python = ace.createEditSession("def add(x, y):\n\treturn x + y\nx_input = int(input())\ny_input = int(input())\nprint(add(x_input, y_input))", "ace / mode / python");
+    const cpp = ace.createEditSession("#include <iostream>\nusing namespace std;\n\nint main() {\n   int a, b;\n   cin >> a >> b;\n   cout << a+b;\n   return 0;\n}", "ace/mode/c_cpp");
+    editor.setSession(python);
 
     const element = document.getElementById("submit");
     element.addEventListener("click", getCode);
+ 
+    const langDropdown = document.getElementById("langList");
+    langDropdown.addEventListener("change", changeLang);
 
     async function getCode() {
+        console.log(editor.getValue());
+        const pr = document.getElementById("langList").value;
+
         var data = editor.getValue();
         try {
-            const res = await $.post("/Exercises/ExecuteCode", { id: @Model.Id, solution: data });
+            const res = await $.post("/Exercises/ExecuteCode", { id: @Model.Id, solution: data, language: pr });
             if (res.status === 200) {
                 const result = JSON.parse(res.data); // parsare JSON string in javascript object
                 console.log("Parsed result:", result); 
-                console.log("Test case 1 - Success:", result['1'].success);
-                console.log("Test case 2 - Success:", result['2']['success']); 
+                displayTestResults(result);
 
                 showSuccess(result)
             } else {
@@ -114,6 +128,21 @@
         }
         
         console.log('not awaited')
+    }
+    function displayTestResults(result) {
+        Object.keys(result).forEach(key => {
+            console.log(`Test case ${key} - Success:`, result[key].success);
+        });
+    }
+    function changeLang() {
+        const pr = document.getElementById("langList").value;
+        if(pr == "cpp") {
+            editor.setSession(cpp);
+        }
+        else if (pr == "python") {
+            editor.setSession(python);
+        }    
+        console.log(pr);
     }
 
     function showSuccess(result) {

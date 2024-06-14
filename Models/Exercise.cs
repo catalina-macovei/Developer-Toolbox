@@ -35,8 +35,8 @@ namespace Developer_Toolbox.Models
         public string? Examples { get; set; }
         [Required(ErrorMessage = "Level of difficulty required!")]
         public string? Difficulty {  get; set; }
-
-        // file test
+        [Required(ErrorMessage = "Test cases required")]
+        public string? TestCases { get; set; }
 
     }
 }
