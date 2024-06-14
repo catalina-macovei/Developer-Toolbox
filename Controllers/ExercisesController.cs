@@ -450,10 +450,12 @@ namespace Developer_Toolbox.Controllers
         [HttpPost]
         public async Task<IActionResult> ExecuteCode(int id, string solution, string language)
         {
-            Solution solution1 = new Solution();
-            solution1.ExerciseId = id;
-            solution1.SolutionCode = solution;
-            solution1.UserId = _userManager.GetUserId(User);
+            Solution solution1 = new Solution
+            {
+                ExerciseId = id,
+                SolutionCode = solution,
+                UserId = _userManager.GetUserId(User)
+            };
 
             var testCases = db.Exercises.Where(ex => ex.Id == id).First().TestCases;
             var request = new
@@ -474,41 +476,25 @@ namespace Developer_Toolbox.Controllers
                 if (response.IsSuccessStatusCode)
                 {
                     var jsonResponse = await response.Content.ReadAsStringAsync();
-                    var result = JsonConvert.DeserializeObject<Dictionary<string, object>>(jsonResponse);
 
-                    int passedTests = 0;
-                    int failedTests = 0;
+                    // Deserialize the outer JSON to get the `result` string
+                    var outerResult = JsonConvert.DeserializeObject<Dictionary<string, string>>(jsonResponse);
 
-                    /*
-                    foreach (var test in result)
+                    if (outerResult.ContainsKey("result"))
                     {
-                        var testResult = (JObject)test.Value;
-                        if (testResult["success"].Value<bool>())
+                        // Deserialize the `result` string to get the actual result dictionary
+                        var innerResult = JsonConvert.DeserializeObject<Dictionary<string, object>>(outerResult["result"]);
+
+                        if (innerResult.ContainsKey("score"))
                         {
-                            passedTests++;
+                            var score = Convert.ToDouble(innerResult["score"]);
+                            solution1.Score = (int?)score;
+                            db.Add(solution1);
+                            db.SaveChanges();
+
+                            return Json(new { status = 200, test_results = jsonResponse, score = score });
                         }
-                        else
-                        {
-                            failedTests++;
-                        }
-                    }*/
-
-                    int totalTests = passedTests + failedTests;
-                    if (totalTests > 0)
-                    {
-                        int score = passedTests / totalTests * 100;
-                        solution1.Score = score;
                     }
-                    else
-                    {
-                        solution1.Score = 0; // Handle case where there are no tests
-                    }
-
-                    Console.WriteLine(result.ToString());
-
-                    db.Add(solution1);
-                    db.SaveChanges();
-                    return Json(new { status = 200, data = result["result"] }); // Return the result with status 200 OK
                 }
                 else
                 {
@@ -523,11 +509,12 @@ namespace Developer_Toolbox.Controllers
                 Console.WriteLine($"Exception occurred: {ex.Message}");
                 return StatusCode(500, new { error = "Internal server error" });
             }
-
+            solution1.Score = 0;
             db.Add(solution1);
             db.SaveChanges();
             return BadRequest(new { error = "Error processing request" });
         }
+
 
         [NonAction]
         public IEnumerable<SelectListItem> GetAllCategories()

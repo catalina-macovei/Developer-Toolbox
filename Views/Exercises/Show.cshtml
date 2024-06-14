@@ -113,12 +113,13 @@
         var data = editor.getValue();
         try {
             const res = await $.post("/Exercises/ExecuteCode", { id: @Model.Id, solution: data, language: pr });
-            if (res.status === 200) {
-                const result = JSON.parse(res.data); // parsare JSON string in javascript object
-                console.log("Parsed result:", result); 
-                displayTestResults(result);
+            if (res.status === 200 && res.test_results) {
+                let { test_results } = JSON.parse(JSON.parse(res.test_results).result);
+                console.log(test_results);
+                console.log("Parsed result:", test_results);
+                displayTestResults(test_results);
 
-                showSuccess(result)
+                showSuccess(test_results)
             } else {
                 console.log("fail")
             }
