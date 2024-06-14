@@ -93,14 +93,10 @@
         </div>
     }
 </section>
-<script src="~/Ace/src/ace.js"></script>
 
-<script type="text/javascript">
-
+<script>
     var editor = ace.edit("editor");
-    editor.setTheme("ace/theme/tomorrow");
-    editor.setFontSize(20);
-    const python = ace.createEditSession("def add(x,y):\n    return x + y", "ace/mode/python");
+    const python = ace.createEditSession("def add(x, y):\n\treturn x + y\nx_input = int(input())\ny_input = int(input())\nprint(add(x_input, y_input))", "ace / mode / python");
     const cpp = ace.createEditSession("#include <iostream>\nusing namespace std;\n\nint main() {\n   int a, b;\n   cin >> a >> b;\n   cout << a+b;\n   return 0;\n}", "ace/mode/c_cpp");
     editor.setSession(python);
 
@@ -117,13 +113,13 @@
         var data = editor.getValue();
         try {
             const res = await $.post("/Exercises/ExecuteCode", { id: @Model.Id, solution: data, language: pr });
-            if (res.status === 200) {
-                const result = JSON.parse(res.data); // parsare JSON string in javascript object
-                console.log("Parsed result:", result); 
-                console.log("Test case 1 - Success:", result['1'].success);
-                console.log("Test case 2 - Success:", result['2']['success']); 
+            if (res.status === 200 && res.test_results) {
+                let { test_results } = JSON.parse(JSON.parse(res.test_results).result);
+                console.log(test_results);
+                console.log("Parsed result:", test_results);
+                displayTestResults(test_results);
 
-                showSuccess(result)
+                showSuccess(test_results)
             } else {
                 console.log("fail")
             }
@@ -134,7 +130,11 @@
         
         console.log('not awaited')
     }
-
+    function displayTestResults(result) {
+        Object.keys(result).forEach(key => {
+            console.log(`Test case ${key} - Success:`, result[key].success);
+        });
+    }
     function changeLang() {
         const pr = document.getElementById("langList").value;
         if(pr == "cpp") {
