@@ -63,7 +63,8 @@ Trello Board: https://trello.com/invite/b/IkGNAbWn/ATTI8ac6152930936af6fce51826c
 	
 	<img src="wwwroot\imgs\Wiki\Merge1.png" alt="Merge Conflicts">
 
-	 - Exercises Controller	
+	 - Exercises Controller
+	
 		Vrem ambele versiuni: Test Cases si Solutions
 		
 		<img src="wwwroot\imgs\Wiki\Merge2.png" alt="Merge Conflicts">
@@ -81,7 +82,9 @@ Trello Board: https://trello.com/invite/b/IkGNAbWn/ATTI8ac6152930936af6fce51826c
 
 - Pull requests
 
-	<img src="wwwroot\imgs\Wiki\PullRequests1.png" alt="Pull requests">
+	<img src="wwwroot\imgs\Wiki\PR.png" alt="Pull requests">
+
+	<img src="wwwroot\imgs\Wiki\PR2.png" alt="Pull requests">
 	
 ## Raportare bug si rezolvare cu pull request
 
