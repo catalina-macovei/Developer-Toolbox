@@ -130,23 +130,45 @@ Din backend server app:
 	
 	<img src="wwwroot\imgs\Wiki\Refactoring4.png" alt="Refactoring">
 
- ## Design Patterns:
-1. Model-View-Controller (MVC) Pattern:
-   • Model: Reprezintă datele aplicației și logica de business. Modelele noastre sunt: Answer, ApplicationUser, Bookmark, Category, Exercise, Question, QuestionTag, Reaction, Solution, Tag 
-   • View: Reprezintă interfața cu utilizatorul. (Index, Edit, New, Show)
-   • Controller: Gestionază interacțiunile utilizatorului, manipulează modelul și returnează view-uri corespunzătoare.
-   
-2. Repository Pattern:
-   • ApplicationDbContext: Acest context de bază de date acționează ca un repository pentru modelele tale, gestionând accesul la date și operațiile CRUD. Repository Pattern ajută la izolarea logicii de acces la date de restul aplicației, facilitând testarea și menținerea.
-   
-3. Dependency Injection (DI):
-    • Constructor Injection:  Controllerele primesc  ApplicationDbContext prin constructor. DI ajută la reducerea dependențelor hard-coded și crește testabilitatea și flexibilitatea aplicației.
+## Design Patterns
 
-4.  Unit of Work Pattern:
-     • ApplicationDbContext acționează adesea ca o unitate de lucru, asigurându-se că modificările aduse entităților sunt gestionate ca o singură tranzacție. Metoda SaveChanges aplică toate modificările la bază de date într-o singură tranzacție.
+# 1. Model-View-Controller (MVC) Pattern
 
-5. ViewBag/TempData (State Management Patterns):
-     • Am utilizat ViewBag și TempData pentru a transfera date între controller și view sau între diferite request-uri.
+- **Model**: Reprezintă datele aplicației și logica de business. Modelele noastre sunt:
+  - `Answer`
+  - `ApplicationUser`
+  - `Bookmark`
+  - `Category`
+  - `Exercise`
+  - `Question`
+  - `QuestionTag`
+  - `Reaction`
+  - `Solution`
+  - `Tag`
+- **View**: Reprezintă interfața cu utilizatorul. Exemple de view-uri sunt:
+  - `Index`
+  - `Edit`
+  - `New`
+  - `Show`
+- **Controller**: Gestionază interacțiunile utilizatorului, manipulează modelul și returnează view-uri corespunzătoare.
 
-6.  Builder Pattern:
-     • Deși nu este un exemplu clasic al Builder Pattern, codul din SeedData pentru crearea și configurarea utilizatorilor poate fi văzut ca o formă simplificată a acestui pattern, unde obiectele complexe sunt construite pas cu pas.
+# 2. Repository Pattern
+
+- **ApplicationDbContext**: Acest context de bază de date acționează ca un repository pentru modelele tale, gestionând accesul la date și operațiile CRUD. Repository Pattern ajută la izolarea logicii de acces la date de restul aplicației, facilitând testarea și menținerea.
+
+# 3. Dependency Injection (DI)
+
+- **Constructor Injection**: Controllerele primesc `ApplicationDbContext` prin constructor. DI ajută la reducerea dependențelor hard-coded și crește testabilitatea și flexibilitatea aplicației.
+
+# 4. Unit of Work Pattern
+
+- **ApplicationDbContext**: Acționează adesea ca o unitate de lucru, asigurându-se că modificările aduse entităților sunt gestionate ca o singură tranzacție. Metoda `SaveChanges` aplică toate modificările la baza de date într-o singură tranzacție.
+
+# 5. ViewBag/TempData (State Management Patterns)
+
+- **ViewBag și TempData**: Sunt utilizate pentru a transfera date între controller și view sau între diferite request-uri.
+
+# 6. Builder Pattern
+
+- **SeedData**: Deși nu este un exemplu clasic al Builder Pattern, codul din `SeedData` pentru crearea și configurarea utilizatorilor poate fi văzut ca o formă simplificată a acestui pattern, unde obiectele complexe sunt construite pas cu pas.
+
