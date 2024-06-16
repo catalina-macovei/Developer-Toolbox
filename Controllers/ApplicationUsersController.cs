@@ -96,6 +96,7 @@ namespace Developer_Toolbox.Controllers
             ViewBag.Answers = answers;
             ViewBag.AnswerCount = answerCount;
             ViewBag.QuestionCount = questionCount;
+            ViewBag.Scor = answerCount * 10 + questionCount * 5;
 
 
             if (TempData.ContainsKey("message"))
@@ -107,7 +108,7 @@ namespace Developer_Toolbox.Controllers
             return View();
         }
 
-        // formularul in care se vor completa datele unei profil nou
+        // formularul in care se vor completa datele unei profil nouu
         public IActionResult New()
         {
             ApplicationUser user = new ApplicationUser();
