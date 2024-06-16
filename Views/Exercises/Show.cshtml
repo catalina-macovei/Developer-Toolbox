@@ -69,13 +69,17 @@
 
     <div id="editor" class="my-5 mx-2" style="grid-area: Editor"></div>
     <br />
-    <div class="d-flex gap-1 justify-content-start mt-2">
-        @Html.DropDownList("ProgrammingLanguage",
-        (IEnumerable<SelectListItem>)ViewBag.ProgrammingLanguagesList,
-        new { @class = "form-control", @id = "langList" }
-        )
+    <div class="d-flex gap-4 gap-1 justify-content-start mt-2">
+        <div class="d-flex gap-1">
+            lang:
+            @Html.DropDownList("ProgrammingLanguage",
+            (IEnumerable<SelectListItem>)ViewBag.ProgrammingLanguagesList,
+            new { @class = "form-control", @id = "langList" }
+            )
+        </div>
+        <button formaction="/Exercises/Show" id="submit" class="btn btn-success" type="submit">Submit</button>
     </div>
-    <button formaction="/Exercises/Show" id="submit" class="btn btn-success" type="submit">Submit</button>
+
     <br />
     @if (!string.IsNullOrEmpty(ViewBag.Result))
     {
@@ -102,7 +106,7 @@
 
     const element = document.getElementById("submit");
     element.addEventListener("click", getCode);
- 
+
     const langDropdown = document.getElementById("langList");
     langDropdown.addEventListener("change", changeLang);
 
@@ -127,7 +131,7 @@
         } catch (err) {
             console.log(err)
         }
-        
+
         console.log('not awaited')
     }
     function displayTestResults(result) {
@@ -137,12 +141,12 @@
     }
     function changeLang() {
         const pr = document.getElementById("langList").value;
-        if(pr == "cpp") {
+        if (pr == "cpp") {
             editor.setSession(cpp);
         }
         else if (pr == "python") {
             editor.setSession(python);
-        }    
+        }
         console.log(pr);
     }
 

@@ -3,7 +3,7 @@
 <section class="p-3 ">
     <h1>Submissions:</h1>
     <br />
-    <section>
+    <section class="d-flex justify-content-around">
         <div class="card w-50" style="width:500px; height:200px;">
             <div class="card-header">
                 <a asp-action="Show" asp-controller="Solutions" asp-route-id="@Model.Id" style="text-decoration: none; outline: none;">
@@ -26,11 +26,12 @@
                         </button>
                     </form>
                 </div>
-
             </div>
+        </div>    
+        <div style="background:#d3d3d3;">
+            <h4 class="" >Source code:</h4>
+            <div id="editor" class="" style="width:500px; height:500px; color:black;">@Model.SolutionCode</div>
         </div>
-        <br />
-        <div id="editor" class="" style="width:500px; height:500px; color:black;">@Model.SolutionCode</div>
     </section>
 </section>
 

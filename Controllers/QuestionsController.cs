@@ -169,6 +169,8 @@ namespace Developer_Toolbox.Controllers
                 ViewBag.Alert = TempData["messageType"];
             }
 
+            ViewBag.Tags = db.Tags.ToList();
+
             return View();
         }
 
@@ -254,22 +256,37 @@ namespace Developer_Toolbox.Controllers
 
         // Se adauga intrebarea in baza de date
         [HttpPost]
-        public IActionResult New(Question question)
+        public IActionResult New(Question question, List<int> TagIds)
         {
             question.UserId = _userManager.GetUserId(User);
+
             try
             {
-                Console.BackgroundColor = ConsoleColor.Green;
+                // Other properties assignment
                 question.CreatedDate = DateTime.Now;
                 question.DislikesNr = 0;
                 question.LikesNr = 0;
 
+                // Initialize QuestionTags collection if necessary
+                if (question.QuestionTags == null)
+                {
+                    question.QuestionTags = new List<QuestionTag>();
+                }
+                // Handle tags
+                foreach (var tagId in TagIds)
+                {
+                    var tag = db.Tags.Find(tagId);
+                    if (tag != null)
+                    {
+                        question.QuestionTags.Add(new QuestionTag { TagId = tagId });
+                    }
+                }
+
                 db.Questions.Add(question);
+                db.SaveChanges();
 
                 TempData["message"] = "The question has been successfully added.";
                 TempData["messageType"] = "alert-primary";
-
-                db.SaveChanges();
 
                 var refererUrl = Request.Headers["Referer"].ToString();
                 return Redirect(refererUrl);
@@ -284,11 +301,12 @@ namespace Developer_Toolbox.Controllers
                     TempData["message"] = "The title cannot exceed 100 characters";
                 if (question.Title.Length < 5)
                     TempData["message"] = "The title must be at least 5 characters long";
+                // Exception handling code
                 var refererUrl = Request.Headers["Referer"].ToString();
                 return Redirect(refererUrl);
             }
-
         }
+
 
         public IActionResult Edit(int id)
         {
@@ -334,9 +352,14 @@ namespace Developer_Toolbox.Controllers
             var bookmarks = db.Bookmarks.Where(b => b.QuestionId == id);
             db.Bookmarks.RemoveRange(bookmarks);
 
+            // Remove associated tags (assuming QuestionTag relationship)
+            var questionTags = db.QuestionTags.Where(qt => qt.QuestionId == id);
+            db.QuestionTags.RemoveRange(questionTags);
+
             db.Questions.Remove(question);
             TempData["message"] = "The question has been successfully deleted.";
             TempData["messageType"] = "alert-primary";
+
             db.SaveChanges();
 
             return RedirectToAction("Index");

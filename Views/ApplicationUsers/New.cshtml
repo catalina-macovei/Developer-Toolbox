@@ -3,44 +3,48 @@
 @{
     ViewBag.Title = "New";
 }
+<section class="p-3">
+    <h2>Make your profile!</h2>
+    <hr />
 
-<br />
-<h2>Make your profile!</h2>
-<hr />
 
-
-@using (Html.BeginForm(actionName: "New", controllerName: "ApplicationUsers", method: FormMethod.Post))
-{
-    <div class="row mb-3">
-        <b>
-            @Html.Label("FirstName", "First Name") </b>
-        <div class="col-sm-3">
-            @Html.TextBox("FirstName", null, new { @class = "form-control" })
-            @*@Html.ValidationMessage("FirstName", null, new { @class = "text-danger" })*@
+    @using (Html.BeginForm(actionName: "New", controllerName: "ApplicationUsers", method: FormMethod.Post))
+    {
+        <div class="row mb-3">
+            <b>
+                @Html.Label("FirstName", "First Name")
+            </b>
+            <div class="col-sm-3">
+                @Html.TextBox("FirstName", null, new { @class = "form-control" })
+                @*@Html.ValidationMessage("FirstName", null, new { @class = "text-danger" })*@
+            </div>
         </div>
-    </div>
 
-    <div class="row mb-3">
-        <b>
-            @Html.Label("LastName", "Last Name") </b>
-        <div class="col-sm-3">
-            @Html.TextBox("LastName", null, new { @class = "form-control" })
-            @*@Html.ValidationMessage("LastName", null, new { @class = "text-danger" })*@
+        <div class="row mb-3">
+            <b>
+                @Html.Label("LastName", "Last Name")
+            </b>
+            <div class="col-sm-3">
+                @Html.TextBox("LastName", null, new { @class = "form-control" })
+                @*@Html.ValidationMessage("LastName", null, new { @class = "text-danger" })*@
+            </div>
         </div>
-    </div>
 
-    <div class="row mb-3">
-        <b>
-            @Html.Label("Description", "Description") </b>
-        <div class="col-sm-5">
-            @Html.TextArea("Description", null, new { @class = "form-control" })
-            @*@Html.ValidationMessage("Bio", null, new { @class = "text-danger" })*@
+        <div class="row mb-3">
+            <b>
+                @Html.Label("Description", "Description")
+            </b>
+            <div class="col-sm-5">
+                @Html.TextArea("Description", null, new { @class = "form-control" })
+                @*@Html.ValidationMessage("Bio", null, new { @class = "text-danger" })*@
+            </div>
         </div>
-    </div>
 
 
-    <br />
+        <br />
 
-    <span style="color: white;">aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa</span>
-    <button class="btn btn-success" type="submit">Create my profile</button>
-}
+        <span style="color: white;">aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa</span>
+        <button class="btn btn-success" type="submit">Create my profile</button>
+    }
+
+</section>
