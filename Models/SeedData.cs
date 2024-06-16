@@ -26,7 +26,7 @@ namespace Developer_Toolbox.Models
                 // daca nu contine roluri, acestea se vor crea
                 context.Roles.AddRange(
                     new IdentityRole { Id = "2c5e174e-3b0e-446f-86af-483d56fd7210", Name = "Admin", NormalizedName = "Admin".ToUpper() },
-                    new IdentityRole { Id = "2c5e174e-3b0e-446f-86af-483d56fd7211", Name = "Editor", NormalizedName = "Editor".ToUpper() },
+                    new IdentityRole { Id = "2c5e174e-3b0e-446f-86af-483d56fd7211", Name = "Moderator", NormalizedName = "Moderator".ToUpper() },
                     new IdentityRole { Id = "2c5e174e-3b0e-446f-86af-483d56fd7212", Name = "User", NormalizedName = "User".ToUpper() }
                 );
 
