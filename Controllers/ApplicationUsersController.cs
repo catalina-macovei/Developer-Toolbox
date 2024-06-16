@@ -96,6 +96,7 @@ namespace Developer_Toolbox.Controllers
             ViewBag.Answers = answers;
             ViewBag.AnswerCount = answerCount;
             ViewBag.QuestionCount = questionCount;
+            ViewBag.Scor = answerCount * 10 + questionCount * 5;
 
 
             if (TempData.ContainsKey("message"))

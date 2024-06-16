@@ -14,6 +14,7 @@ using System.Web;
 using Xunit.Sdk;
 using System.Text.RegularExpressions;
 using Humanizer;
+using Developer_Toolbox.Repositories;
 
 namespace Developer_Toolbox.Controllers
 {
@@ -23,19 +24,22 @@ namespace Developer_Toolbox.Controllers
 
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly RoleManager<IdentityRole> _roleManager;
+        private readonly IExerciseRepository _exerciseRepository;
 
         // This is for code execution:  <summary>
         private readonly HttpClient _httpClient;
 
         public ExercisesController(ApplicationDbContext context,
             UserManager<ApplicationUser> userManager,
-            RoleManager<IdentityRole> roleManager, HttpClient httpClient)
+            RoleManager<IdentityRole> roleManager, HttpClient httpClient, IExerciseRepository exerciseRepository)
         {
             db = context;
             _userManager = userManager;
             _roleManager = roleManager;
             _httpClient = httpClient;   // variable for http request to send the code
+            _exerciseRepository = exerciseRepository;
         }
+
 
         //Conditii de afisare a butoanelor de editare si stergere
         private void SetAccessRights()
@@ -103,7 +107,7 @@ namespace Developer_Toolbox.Controllers
                 search = Convert.ToString(HttpContext.Request.Query["search"]).Trim();
 
                 // filtram rezultatele dupa search
-                exercises = exercises.Where(ex => ex.Title.Contains(search) || ex.Summary.Contains(search)); 
+                exercises = exercises.Where(ex => ex.Title.Contains(search) || ex.Summary.Contains(search));
 
                 // daca a fost aleasa optiunea, sortam rezultatele cautarii dupa dificultate
                 if (Convert.ToString(HttpContext.Request.Query["SelectedDifficultyOption"]) != null)
@@ -124,7 +128,7 @@ namespace Developer_Toolbox.Controllers
                 }
             }
 
-            
+
 
             // pentru transmiterea inapoi in view
             ViewBag.SearchString = search;
@@ -166,7 +170,7 @@ namespace Developer_Toolbox.Controllers
 
             // transmitem exercitiile in view
             ViewBag.Exercises = paginatedExercises;
-                            
+
             return View();
         }
 
@@ -191,11 +195,11 @@ namespace Developer_Toolbox.Controllers
             // pentru dropdown limbaje de programare
             var cpp = new SelectListItem { Text = "C++", Value = "cpp" };
             var python = new SelectListItem { Text = "Python", Value = "python" };
-            List<SelectListItem> programmingLanguagesList = new List<SelectListItem>{python, cpp};
+            List<SelectListItem> programmingLanguagesList = new List<SelectListItem> { python, cpp };
 
 
             ViewBag.ProgrammingLanguagesList = programmingLanguagesList;
-            return View(exercise);  
+            return View(exercise);
 
         }
 
@@ -281,12 +285,12 @@ namespace Developer_Toolbox.Controllers
             ex.UserId = _userManager.GetUserId(User);
 
             // verificam daca se respecta formatul test cases
-            if(ex.TestCases != null && !HasValidStructure(ex.TestCases))
+            if (ex.TestCases != null && !HasValidStructure(ex.TestCases))
             {
                 ModelState.AddModelError("TestCases", "The test cases have an invalid format!");
             }
 
-            if(ModelState.IsValid)
+            if (ModelState.IsValid)
             {
                 //protejam de cross-scripting
                 ex.Restrictions = sanitizer.Sanitize(ex.Restrictions);
@@ -326,9 +330,9 @@ namespace Developer_Toolbox.Controllers
             // preluam exercitiul din baza de date
             Exercise exercise = db.Exercises.Include("Category")
                                             .Include("User")
-                                            .Where(exercise=>exercise.Id == id)
+                                            .Where(exercise => exercise.Id == id)
                                             .First();
-            
+
             // pentru dropdown categorii
             exercise.Categories = GetAllCategories();
 
@@ -361,7 +365,7 @@ namespace Developer_Toolbox.Controllers
             if (ModelState.IsValid)
             {
                 //nu permiterm modificarea exercitiului decat de admin sau de autorul lui
-                if(exercise.UserId == _userManager.GetUserId(User) || User.IsInRole("Admin")) 
+                if (exercise.UserId == _userManager.GetUserId(User) || User.IsInRole("Admin"))
                 {
                     //preluam noile informatii si protejam de cross-scripting
                     exercise.Title = requestedExercise.Title;
@@ -405,7 +409,7 @@ namespace Developer_Toolbox.Controllers
                 return View(exercise);
             }
 
-           
+
         }
 
         [Authorize(Roles = "Admin,Moderator")]
@@ -435,7 +439,7 @@ namespace Developer_Toolbox.Controllers
                 TempData["messageType"] = "alert-danger";
                 return Redirect("/Exercises/Index/" + categoryId);
             }
-                
+
         }
 
         [HttpPost]
@@ -534,15 +538,15 @@ namespace Developer_Toolbox.Controllers
             Regex parsing = new Regex(@"Input\n([^\n]+)\nOutput\n([^\n]*)", RegexOptions.IgnoreCase);
             var test_cases_cleaned = test_cases.Replace("\r", "").Trim('\n');
             // impartim in teste
-            var split_tests = Regex.Split(test_cases_cleaned, @"([\n]*)Test case #[0-9]+:([\n]*)" , RegexOptions.IgnoreCase);
+            var split_tests = Regex.Split(test_cases_cleaned, @"([\n]*)Test case #[0-9]+:([\n]*)", RegexOptions.IgnoreCase);
             foreach (var test_case in split_tests)
             {
                 // pentru fiecare test verificam sa aiba input si output
                 var test_case_cleaned = test_case.Replace("\r", "").Trim('\n').Trim();
                 if (test_case_cleaned.Length == 0) continue;
                 Match match = parsing.Match(test_case_cleaned);
-                if (!match.Success) 
-                { 
+                if (!match.Success)
+                {
                     return false;
                 }
             }
@@ -550,6 +554,29 @@ namespace Developer_Toolbox.Controllers
             return true;
         }
 
+        public IActionResult GetAllExercises()
+        {
+            var exercises = _exerciseRepository.GetAllExercises();
+            return View(exercises);
+        }
+
+        // Noua metodă GetSolutionById
+        public IActionResult GetExerciseById(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var exercise = _exerciseRepository.GetExerciseById(id);
+            if (exercise == null)
+            {
+                return NotFound();
+            }
+
+            return View(exercise);
+        }
+    }
 
     }
 
@@ -576,4 +603,3 @@ public class DifficultyComp : IComparer<string?>
             return xint.CompareTo(yint);
         }
     }
-}

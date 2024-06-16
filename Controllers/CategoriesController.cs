@@ -1,5 +1,6 @@
 ﻿using Developer_Toolbox.Data;
 using Developer_Toolbox.Models;
+using Developer_Toolbox.Repositories;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -16,15 +17,18 @@ namespace Developer_Toolbox.Controllers
 
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly RoleManager<IdentityRole> _roleManager;
+        private readonly ICategoryRepository _categoryRepository;
+
         public CategoriesController(ApplicationDbContext context,
             IWebHostEnvironment environment,
             UserManager<ApplicationUser> userManager,
-            RoleManager<IdentityRole> roleManager)
+            RoleManager<IdentityRole> roleManager, ICategoryRepository categoryRepository)
         {
             db = context;
             _userManager = userManager;
             _roleManager = roleManager;
             _env = environment;
+            _categoryRepository = categoryRepository;
         }
 
         //Conditii de afisare a butoanelor de editare si stergere
@@ -296,6 +300,28 @@ namespace Developer_Toolbox.Controllers
 
             var relativeFilePath = Path.Combine(uploadsFolder, uniqueFileName).Replace(Path.DirectorySeparatorChar, '/');
             return $"/{relativeFilePath}";
+        }
+
+        public IActionResult GetAllCategories()
+        {
+            var categories = _categoryRepository.GetAllCategories();
+            return View(categories);
+        }
+
+        public IActionResult GetCategoryById(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var category = _categoryRepository.GetCategoryById(id);
+            if (category == null)
+            {
+                return NotFound();
+            }
+
+            return View(category);
         }
 
     }
