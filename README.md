@@ -51,31 +51,33 @@ Trello Board: https://trello.com/invite/b/IkGNAbWn/ATTI8ac6152930936af6fce51826c
 - Branch Creation
 
 	Am folosit o integration branch pentru feature-uri numita development. Celelalte feature branches au urmatoarea conventie de nume: T de la “task”, urmat de ora si data crearii branch-ului. Regula de denumire este utila in urmarirea progresului proiectului.
-	<img src="wwwroot\imgs\Wiki\Branches.png" alt="Branches">
+	
+	<img src="wwwroot\imgs\Wiki\Br.jpeg" alt="Branches">
 
 - Commits
 
-	<img src="wwwroot\imgs\Wiki\Commits.png" alt="Commits">
+	<img src="wwwroot\imgs\Wiki\Commits.jpeg" alt="Commits">
 
 - Git Conflicts and Merge
 	
 	Git Conflicts on Merge T10342905 into Development
 	
-	<img src="wwwroot\imgs\Wiki\Merge1.png" alt="Merge Conflicts">
+	<img src="wwwroot\imgs\Wiki\Merge1.jpeg" alt="Merge Conflicts">
 
 	 - Exercises Controller
 	
 		Vrem ambele versiuni: Test Cases si Solutions
 		
-		<img src="wwwroot\imgs\Wiki\Merge2.png" alt="Merge Conflicts">
+		<img src="wwwroot\imgs\Wiki\Merge2.jpeg" alt="Merge Conflicts" style>
 
 		Versiunea finala
 		 
-		<img src="wwwroot\imgs\Wiki\Merge3.png" alt="Merge Conflicts">
+		<img src="wwwroot\imgs\Wiki\Merge3.jpeg" alt="Merge Conflicts">
 
 	- Exercises Show
 		
 		Alegem incoming
+		
 		<img src="wwwroot\imgs\Wiki\Merge4.png" alt="Merge Conflicts">
 
 	Astfel, am rezolvat cele doua conflicte si acum putem apasa Accept Merge.
@@ -88,7 +90,7 @@ Trello Board: https://trello.com/invite/b/IkGNAbWn/ATTI8ac6152930936af6fce51826c
 	
 ## Raportare bug si rezolvare cu pull request
 
-<img src="wwwroot\imgs\Wiki\PullRequests1.png" alt="Pull requests">
+<img src="wwwroot\imgs\Wiki\Request.jpeg" alt="Pull requests">
 
 Din backend server app:
 

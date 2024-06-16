@@ -39,10 +39,6 @@ namespace Developer_Toolbox.Controllers
             // verificam daca are profilul complet
             bool userProfilComplet = false;
 
-            // bool userConectat = false;
-            //if (db.ApplicationUsers.Find(_userManager.GetUserId(User)).FirstName != null)
-            //    userProfilComplet = true;
-
             if (_userManager.GetUserId(User) != null)
             {
                 // userConectat = true;
