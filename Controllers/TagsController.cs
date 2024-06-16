@@ -53,7 +53,7 @@ namespace Developer_Toolbox.Controllers
             return View(taggedQuestions);
         }
 
-        [Authorize(Roles = "Moderator,Admin")]
+        [Authorize(Roles = "Collaborator,Admin")]
         public ActionResult New()
         {
             // build a new object of type tag
@@ -63,7 +63,7 @@ namespace Developer_Toolbox.Controllers
         }
 
 
-        [Authorize(Roles = "Moderator,Admin")]
+        [Authorize(Roles = "Collaborator,Admin")]
         [HttpPost]
         public ActionResult New(Tag tag)
         {
@@ -81,7 +81,7 @@ namespace Developer_Toolbox.Controllers
             return RedirectToAction("Index");
         }
 
-        [Authorize(Roles = "Moderator,Admin")]
+        [Authorize(Roles = "Collaborator,Admin")]
         public IActionResult Edit(int id)
         {
             Tag tag = db.Tags.Find(id);
@@ -89,7 +89,7 @@ namespace Developer_Toolbox.Controllers
             return View(tag);
         }
 
-        [Authorize(Roles = "Moderator,Admin")]
+        [Authorize(Roles = "Collaborator,Admin")]
         [HttpPost]
         public ActionResult Edit(int id, Tag requestTag)
         {
@@ -111,7 +111,7 @@ namespace Developer_Toolbox.Controllers
             return View(requestTag);
         }
 
-        [Authorize(Roles = "Moderator,Admin")]
+        [Authorize(Roles = "Collaborator,Admin")]
         [HttpPost]
         public ActionResult Delete(int id)
         {
