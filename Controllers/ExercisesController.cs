@@ -7,10 +7,13 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using System.Net.Http;
 using System.Text;
 using System.Web;
-
+using Xunit.Sdk;
+using System.Text.RegularExpressions;
+using Humanizer;
 
 namespace Developer_Toolbox.Controllers
 {
@@ -188,6 +191,14 @@ namespace Developer_Toolbox.Controllers
                                             .Where(exercise => exercise.Id == id)
                                             .First();
             @ViewBag.CurrentCode = "";
+
+            // pentru dropdown limbaje de programare
+            var cpp = new SelectListItem { Text = "C++", Value = "cpp" };
+            var python = new SelectListItem { Text = "Python", Value = "python" };
+            List<SelectListItem> programmingLanguagesList = new List<SelectListItem>{python, cpp};
+
+
+            ViewBag.ProgrammingLanguagesList = programmingLanguagesList;
             return View(exercise);  
 
         }
@@ -226,6 +237,13 @@ namespace Developer_Toolbox.Controllers
 
                 //trimitem in view si codul curent
                 ViewBag.CurrentCode = solution.SolutionCode;
+                // pentru dropdown limbaje de programare
+                var cpp = new SelectListItem { Text = "C++", Value = "cpp" };
+                var python = new SelectListItem { Text = "Python", Value = "python" };
+                List<SelectListItem> programmingLanguagesList = new List<SelectListItem> { python, cpp };
+
+
+                ViewBag.ProgrammingLanguagesList = programmingLanguagesList;
 
                 SetAccessRights();
 
@@ -265,12 +283,17 @@ namespace Developer_Toolbox.Controllers
         [HttpPost]
         public IActionResult New(Exercise ex)
         {
-            //de adaugat la ex user ul care a adaugat exercitiul
 
             var sanitizer = new HtmlSanitizer();
 
             ex.Date = DateTime.Now;
             ex.UserId = _userManager.GetUserId(User);
+
+            // verificam daca se respecta formatul test cases
+            if(ex.TestCases != null && !HasValidStructure(ex.TestCases))
+            {
+                ModelState.AddModelError("TestCases", "The test cases have an invalid format!");
+            }
 
             if(ModelState.IsValid)
             {
@@ -338,7 +361,11 @@ namespace Developer_Toolbox.Controllers
             Exercise exercise = db.Exercises.Find(id);
 
             var sanitizer = new HtmlSanitizer();
-          
+
+            if (requestedExercise.TestCases != null && !HasValidStructure(requestedExercise.TestCases))
+            {
+                ModelState.AddModelError("TestCases", "The test cases have an invalid format!");
+            }
 
             if (ModelState.IsValid)
             {
@@ -353,6 +380,7 @@ namespace Developer_Toolbox.Controllers
                     exercise.Restrictions = sanitizer.Sanitize(requestedExercise.Restrictions);
                     exercise.Examples = sanitizer.Sanitize(requestedExercise.Examples);
                     exercise.Difficulty = requestedExercise.Difficulty;
+                    exercise.TestCases = requestedExercise.TestCases;
 
                     db.SaveChanges();
 
@@ -420,28 +448,73 @@ namespace Developer_Toolbox.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> ExecuteCode(int id, string solution)
+        public async Task<IActionResult> ExecuteCode(int id, string solution, string language)
         {
+            Solution solution1 = new Solution
+            {
+                ExerciseId = id,
+                SolutionCode = solution,
+                UserId = _userManager.GetUserId(User)
+            };
+
+            var testCases = db.Exercises.Where(ex => ex.Id == id).First().TestCases;
             var request = new
             {
                 id = id,
-                solution = solution
+                solution = solution,
+                lang = language,
+                test_cases = testCases
             };
 
             var jsonRequest = JsonConvert.SerializeObject(request);
             var httpContent = new StringContent(jsonRequest, Encoding.UTF8, "application/json");
 
-            var response = await _httpClient.PostAsync("http://localhost:8000/execute", httpContent);
-
-            if (response.IsSuccessStatusCode)
+            try
             {
-                var jsonResponse = await response.Content.ReadAsStringAsync();
-                var result = JsonConvert.DeserializeObject<Dictionary<string, string>>(jsonResponse);
-                return Json(new { status = 200, data = result }); // Return the result with status 200 OK
-            }
+                var response = await _httpClient.PostAsync("http://localhost:8000/execute", httpContent);
 
+                if (response.IsSuccessStatusCode)
+                {
+                    var jsonResponse = await response.Content.ReadAsStringAsync();
+
+                    // Deserialize the outer JSON to get the `result` string
+                    var outerResult = JsonConvert.DeserializeObject<Dictionary<string, string>>(jsonResponse);
+
+                    if (outerResult.ContainsKey("result"))
+                    {
+                        // Deserialize the `result` string to get the actual result dictionary
+                        var innerResult = JsonConvert.DeserializeObject<Dictionary<string, object>>(outerResult["result"]);
+
+                        if (innerResult.ContainsKey("score"))
+                        {
+                            var score = Convert.ToDouble(innerResult["score"]);
+                            solution1.Score = (int?)score;
+                            db.Add(solution1);
+                            db.SaveChanges();
+
+                            return Json(new { status = 200, test_results = jsonResponse, score = score });
+                        }
+                    }
+                }
+                else
+                {
+                    // Log the response status and content for debugging
+                    var errorContent = await response.Content.ReadAsStringAsync();
+                    Console.WriteLine($"Error response from backend: {response.StatusCode} - {errorContent}");
+                }
+            }
+            catch (Exception ex)
+            {
+                // Log the exception for debugging
+                Console.WriteLine($"Exception occurred: {ex.Message}");
+                return StatusCode(500, new { error = "Internal server error" });
+            }
+            solution1.Score = 0;
+            db.Add(solution1);
+            db.SaveChanges();
             return BadRequest(new { error = "Error processing request" });
         }
+
 
         [NonAction]
         public IEnumerable<SelectListItem> GetAllCategories()
@@ -462,6 +535,28 @@ namespace Developer_Toolbox.Controllers
             }
 
             return selectList;
+        }
+
+        [NonAction]
+        private bool HasValidStructure(string test_cases)
+        {
+            Regex parsing = new Regex(@"Input\n([^\n]+)\nOutput\n([^\n]*)", RegexOptions.IgnoreCase);
+            var test_cases_cleaned = test_cases.Replace("\r", "").Trim('\n');
+            // impartim in teste
+            var split_tests = Regex.Split(test_cases_cleaned, @"([\n]*)Test case #[0-9]+:([\n]*)" , RegexOptions.IgnoreCase);
+            foreach (var test_case in split_tests)
+            {
+                // pentru fiecare test verificam sa aiba input si output
+                var test_case_cleaned = test_case.Replace("\r", "").Trim('\n').Trim();
+                if (test_case_cleaned.Length == 0) continue;
+                Match match = parsing.Match(test_case_cleaned);
+                if (!match.Success) 
+                { 
+                    return false;
+                }
+            }
+
+            return true;
         }
 
 

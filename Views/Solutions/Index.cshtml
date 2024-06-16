@@ -1,12 +1,12 @@
 ﻿<section class="p-3">
-    <h1 class="gray-dark" style="">Solutions:</h1>
+    <h1 class="gray-dark" style="">Submissions:</h1>
     <br />
 
     <div class="container">
-        <div class="row row-cols-1 row-cols-md-2 g-3">
+        <ul class="list-group">
             @foreach (var solution in ViewBag.Solutions)
             {
-                <div class="col">
+                <li class="list-group-item">
                     <div class="card">
                         <div class="card-header">
                             <a asp-action="Show" asp-controller="Solutions" asp-route-id="@solution.Id" style="text-decoration: none; outline: none;">
@@ -31,9 +31,10 @@
                             </div>
                         </div>
                     </div>
-                </div>
+                </li>
             }
-        </div>
+        </ul>
     </div>
+
 
 </section>
