@@ -3,105 +3,105 @@
     ViewBag.Title = "Show";
 
 }
-
-@if (TempData["message"] != null)
-{
-    <div class="alert alert-primary p-3 rounded-3 text-center mb-5" role="alert">
-        @ViewBag.Message
-    </div>
-}
-<br />
-
-
-<div class="d-flex justify-content-end">
-
-    @if (ViewBag.User.Id == ViewBag.UserCurent || ViewBag.EsteAdmin || ViewBag.EsteModerator)
+<section class="container p-3">
+    @if (TempData["message"] != null)
     {
-    <a class="btn btn-success custom-btn mr-10" href="/ApplicationUsers/Edit/@ViewBag.User.Id">Edit Profile</a>
-     <a class="btn btn-danger custom-btn position-relative" style="left: 5px;" href="/ApplicationUsers/Delete/@ViewBag.User.Id">Delete Profile</a>
+        <div class="alert alert-primary p-3 rounded-3 text-center mb-5" role="alert">
+            @ViewBag.Message
+        </div>
     }
-</div>
+    <br />
 
-<hr />
+        @if (ViewBag.User.Id == ViewBag.UserCurent || ViewBag.EsteAdmin || ViewBag.EsteModerator)
+        {
+            <div class="d-flex flex-row justify-content-between m-2">
+                <a class="btn btn-success custom-btn mr-10" href="/ApplicationUsers/Edit/@ViewBag.User.Id">Edit Profile</a>
+                <a class="btn btn-danger custom-btn position-relative" style="left: 5px;" href="/ApplicationUsers/Delete/@ViewBag.User.Id">Delete Profile</a>
+            </div>
+          }
 
-<br />
 
-<h2 class="text-center"> <i class="bi bi-person-fill"></i> @ViewBag.User.FirstName @ViewBag.User.LastName </h2>
-<br />
-<br />
+        <hr />
 
+        <br />
 
- 
-
-<div class="row">
-    <div class="col-sm-9 mb-9">
-        <!-- Colapsarea coloanelor pentru ecrane mici și mai mari -->
-        <div class="card">
-            <div class="card-body">
-                <div><i class="bi bi-vector-pen"></i> @ViewBag.User.Description</div>
+        <h2 class="text-center"> <i class="bi bi-person-fill"></i> @ViewBag.User.FirstName @ViewBag.User.LastName </h2>
+        <br />
+        <br />
+        <div class="d-flex flex-column align-content-center justify-content-center px-3">
+            <div class="row">
+                <div class="col-2">
+                    <!-- Colapsarea coloanelor pentru ecrane mici și mai mari -->
+                    <div class="card" style="height:85px">
+                        <div class="card-body">
+                            <div><i class="bi bi-vector-pen"></i> @ViewBag.User.Description</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-2">
+                    <!-- Colapsarea coloanelor pentru ecrane mici și mai mari -->
+                    <div class="card" style="height:85px">
+                        <div class="card-body">
+                            <div> 🎉 @ViewBag.User.Birthday 🎂</div>
+                        </div>
+                    </div>
+                </div>
+            <div class="col-2">
+                <!-- Colapsarea coloanelor pentru ecrane mici și mai mari -->
+                <div class="card" style="height:85px">
+                    <div class="card-body">
+                        <div>🏅 <b><a style="font-size: 20px">100</a></b></div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-2">
+                <!-- Colapsarea coloanelor pentru ecrane mici și mai mari -->
+                <div class="card" style="height:85px">
+                    <div class="card-body">
+                        <b>Questions Asked: @ViewBag.QuestionCount </b> <br />
+                        <b>Answers Posted: @ViewBag.AnswerCount</b>
+                    </div>
+                </div>
             </div>
         </div>
-    </div>
-    <div class="col-sm-3 mb-3">
-        <!-- Colapsarea coloanelor pentru ecrane mici și mai mari -->
-        <div class="card">
-            <div class="card-body">
-                <div> 🎉 @ViewBag.User.Birthday 🎂</div>
-            </div>
         </div>
-    </div>
-</div>
+    <br />
 
-
-<div class="row">
-    <div class="col-sm-2 mb-3">
-        <!-- Colapsarea coloanelor pentru ecrane mici și mai mari -->
-        <div class="card">
-            <div class="card-body">
-                <div>🏅 <b><a style="font-size: 20px">100</a></b></div>
-            </div>
-        </div>
-    </div>
-    <div class="col-sm-10 mb-10">
-        <!-- Colapsarea coloanelor pentru ecrane mici și mai mari -->
-        <div class="card">
-            <div class="card-body">
-                <b>Questions Asked: @ViewBag.QuestionCount </b> <br />
-                <b>Answers Posted: @ViewBag.AnswerCount</b>
-            </div>
-        </div>
-    </div>
-</div>
-
-</br>
-
-@*Afisare raspunsuri si intrebari postate*@
+    @*Afisare raspunsuri si intrebari postate*@
 
     <div class="container">
         <div class="row">
             <div class="col-md-6">
-            <div class="p-3 border bg-light"><b>Questions</b></div>
+                <div class="p-3 border bg-light"><b>Questions</b></div>
+                <div class="card mb-3">
                 @foreach (var question in ViewBag.Questions)
                 {
-                    <div class="card mb-3"> 
-                            <div class="card-body text-primary">
-                                    <div class="card-text" ><a href="/Questions/Show/@question.Id">@question.Description </a> </div> 
+
+                        <div class="card-body text-primary" style="outline: none !important;">
+                            <div class="card-text" style="outline: none !important;">
+                                <i class="bi bi-box-arrow-up-right" style="color:black"></i><a href="/Questions/Show/@question.Id">  @question.Title </a>
                         </div>
-                    </div>
+                        </div>
                 }
+                </div>
             </div>
 
             <div class="col-md-6">
                 <div class="p-3 border bg-light"><b>Answers</b></div>
-            @foreach (var answer in ViewBag.Answers)
-            {
-                <div class="card mb-3"> 
+                <div class="card mb-3">
+                @foreach (var answer in ViewBag.Answers)
+                {
+                    
                     <div class="card-body text-primary">
-                        <div class="card-text" ><a href="/Answers/Show/@answer.Id">@answer.Content </a> </div> 
+                        <div class="card-text" style="outline: none !important;"><i class="bi bi-box-arrow-up-right" style="color:black"></i> <a href="/Questions/Show/@answer.QuestionId">@answer.Content </a> </div>
                     </div>
+                    
+                }
                 </div>
-            }
             </div>
         </div>
     </div>
 
+
+
+</section>

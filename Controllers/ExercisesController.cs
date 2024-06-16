@@ -40,7 +40,7 @@ namespace Developer_Toolbox.Controllers
         //Conditii de afisare a butoanelor de editare si stergere
         private void SetAccessRights()
         {
-            ViewBag.IsModerator = User.IsInRole("Editor");
+            ViewBag.IsModerator = User.IsInRole("Moderator");
 
             ViewBag.IsAdmin = User.IsInRole("Admin");
 
@@ -48,10 +48,6 @@ namespace Developer_Toolbox.Controllers
 
             // verificam daca are profilul complet
             bool completeProfile = false;
-
-            // bool userConectat = false;
-            //if (db.ApplicationUsers.Find(_userManager.GetUserId(User)).FirstName != null)
-            //    userProfilComplet = true;
 
             if (_userManager.GetUserId(User) != null)
             {
@@ -204,11 +200,9 @@ namespace Developer_Toolbox.Controllers
         }
 
         [HttpPost]
-        [Authorize(Roles = "User,Editor,Admin")]
+        [Authorize(Roles = "User,Moderator,Admin")]
         public IActionResult Show(string id, string x)
         {
-            // TODO: in view preia codul din editor pentru SolutionCode
-            // TODO: calculeaza scorul in functie de rezultatele testarii
             Solution solution = new Solution();
             solution.SolutionCode = x;
             solution.ExerciseId = int.Parse(id);
@@ -219,12 +213,9 @@ namespace Developer_Toolbox.Controllers
                 db.Solutions.Add(solution);
                 db.SaveChanges();
 
-                // recalculam reputation points in functie de scor
-
                 TempData["message"] = "Your solution has been submitted";
                 TempData["messageType"] = "alert-success";
 
-                // TODO: depinde unde afisam rezultatele testarii
                 return Redirect("/Solutions/Show/" + solution.Id);
             }
             else
@@ -251,7 +242,7 @@ namespace Developer_Toolbox.Controllers
             }
         }
 
-        [Authorize(Roles = "Admin,Editor")]
+        [Authorize(Roles = "Admin,Moderator")]
         public IActionResult New()
         {
             //transmitem mesajele primite in view
@@ -279,7 +270,7 @@ namespace Developer_Toolbox.Controllers
             return View(ex);
         }
 
-        [Authorize(Roles = "Admin,Editor")]
+        [Authorize(Roles = "Admin,Moderator")]
         [HttpPost]
         public IActionResult New(Exercise ex)
         {
@@ -329,7 +320,7 @@ namespace Developer_Toolbox.Controllers
             }
         }
 
-        [Authorize(Roles = "Admin,Editor")]
+        [Authorize(Roles = "Admin,Moderator")]
         public IActionResult Edit(int id)
         {
             // preluam exercitiul din baza de date
@@ -354,7 +345,7 @@ namespace Developer_Toolbox.Controllers
             return View(exercise);
         }
 
-        [Authorize(Roles = "Admin,Editor")]
+        [Authorize(Roles = "Admin,Moderator")]
         [HttpPost]
         public IActionResult Edit(int id, Exercise requestedExercise)
         {
@@ -417,7 +408,7 @@ namespace Developer_Toolbox.Controllers
            
         }
 
-        [Authorize(Roles = "Admin,Editor")]
+        [Authorize(Roles = "Admin,Moderator")]
         [HttpPost]
         public IActionResult Delete(int id)
         {

@@ -1,151 +1,125 @@
-﻿<div class="p-3">
-@{
-    ViewBag.Title = "Index";
-}
-<br />
-<br />
-<h1 class="gray-dark" style="">Questions:</h1>
-<br />
-
-
-@if (TempData["message"] != null)
-{
-    <div class="alert p-3 rounded-3 text-center mb-5 @ViewBag.Alert">
-        @ViewBag.Message
+﻿<div class="py-3 px-5 d-flex flex-column gap-3">
+    <div class="d-flex justify-content-between">
+        <h1 class="gray-dark" style="color:#595959">Questions:</h1>
+        <a class="btn btn-outline-secondary py-sm-3 px-sm-3 rounded-pill " style="font-weight:bold;" asp-area="" asp-controller="Bookmarks" asp-action="Show"> <i class="bi bi-bookmark-heart"></i> Saved </a>
     </div>
-}
 
-<!-- Motorul de cautare -->
-<div>
-<form method="GET">
-    <div class="input-group mb-3">
-        <input type="text" class="form-control" placeholder="Search topics or keywords" name="search" value="@ViewBag.SearchString">
-        <button class="btn btn-outline-primary" type="submit">Search</button>
-    </div>
-</form>
- </div>
+    @if (TempData["message"] != null)
+    {
+        <div class="alert p-3 rounded-3 text-center mb-5 @ViewBag.Alert">
+            @ViewBag.Message
+        </div>
+    }
 
+    <div class="d-flex flex-column justify-content-center align-items-center">
+        @if (ViewBag.UserCurent != null)
+        {
+            <!-- Formular adaugare întrebare -->
+            <div class="card formpost w-50">
+                <form method="post" action="/Questions/New">
 
+                    <div class="card-body p-4">
+                        <div class="box-shadow alert-primary row py-2 px-3 rounded-2 mb-4"><h3 style="color:#595959">Ask something:</h3></div>
 
-@if (ViewBag.UserCurent!=null)
-{
-    <br />
-    <br />
-    <!-- Formular adaugare întrebare -->
-    <div class="card formpost">
+                        <div class="row mb-2">
+                            <label>Title</label>
+                            <input class="form-control border-primary" name="Title"></input>
+                        </div>
 
+                        <div class="row mb-2">
 
-        <form method="post" action="/Questions/New">
+                            <label>Description</label>
+                            <textarea class="form-control border-primary" name="Description"></textarea>
 
-            <div class="card-body">
-                <div class="box-shadow bg-primary row py-2 px-3 rounded-2"><h3 style="color:white">Ask a new question</h3></div>
+                        </div>
 
-                <div class="row">
-                    <label>Title</label>
-                    <input class="form-control border-primary" name="Title"></input>
-                </div>
+                        <br />
+                        <h4 style="color:#595959">Select tags:</h4>
+                        <div class="d-flex flex-row gap-4" style="color:#595959">
+                           
+                            @foreach (var tag in ViewBag.Tags)
+                            {
+                                <div >
+                                    <input type="checkbox" name="TagIds" value="@tag.Id" id="tag-@tag.Id" />
+                                    <label for="tag-@tag.Id">@tag.Name</label>
+                                </div>
+                            }
+                        </div>
+                        <button class="btn btn-primary px-3 rounded-pill mb-3 mt-4 mr-auto"  type="submit">Submit</button>
 
-                <div class="row">
-                    
-                    <label>Description</label>
-                    <textarea class="form-control border-primary" name="Description"></textarea>
-                    
-                </div>
+                    </div>
 
-                <br />
-
-                <button class="btn btn-primary px-3 rounded-pill mb-3" type="submit">Post</button>
+                </form>
 
             </div>
-
+        }
+        <br />
+        <br/>
+        <hr class="w-100 m-0 p-0" />
+     </div>
+        
+    <div class="container">
+        <!-- Motorul de cautare -->
+        <form method="GET" class="row d-flex justify-content-center align-items-center w-100">
+                <div class="input-group mb-3 w-50 mr-0 ">
+                    <input type="text" class="form-control" placeholder="Search topics or keywords" name="search" value="@ViewBag.SearchString">
+                    <button class="btn btn-outline-secondary" type="submit">Search</button>
+                </div>
         </form>
+        @foreach (var item in ViewBag.QuestionsWithAutor)
+        {
+            <div class="row justify-content-center align-items-center">
+                <div class="col-md-8">
+                    <div class="card">
+                        <div class="card-body">
+                            <a href="/ApplicationUsers/Show/@item.AutorId" style="text-decoration: none;">
+                                <h3 class="card-title alert-primary py-3 px-3 rounded-2"><i class="bi bi-person-fill"></i> @item.AutorFirstName @item.AutorLastName</h3>
+                            </a>
+                            <div class="card-title"><h3>@item.Question.Title</h3></div>
+                            <br /><br />
+                            <div class="d-flex justify-content-between align-items-start flex-row mt-3">
+                                <small class="alert-secondary">@item.Question.CreatedDate</small>
+                                @foreach (var questionTag in item.Tags)
+                                {
+                                    <a asp-action="Show" asp-controller="Tags" asp-route-id="@questionTag.Id" class="btn btn-warning border rounded-pill text-black px-3 mb-3 animated slideInRight" style="font-weight:bold;">#@questionTag.Name</a>
+                                }
+                                <div class="d-flex flex-row justify-content-end">
+                                    <a class="btn btn-outline-primary px-3 rounded-pill mb-3" href="/Questions/Show/@item.Question.Id">See question</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <br />
+        }
+        <div class="row justify-content-center align-items-center">
+            <nav aria-label="Page navigation example">
+                <ul class="pagination">
+                    <li class="page-item">
+                        <a class="page-link" href="@ViewBag.PaginationBaseUrl=1" aria-label="Previous">
+                            <span aria-hidden="true">&laquo;</span>
+                        </a>
+                    </li>
 
-    </div>
-}
-<br />
-<hr />
-
-@foreach (var item in ViewBag.QuestionsWithAutor)
-{
-    <div class="card ">
-
-        <div class="card-body">
-            <a href="/ApplicationUsers/Show/@item.AutorId" style="text-decoration: none;">
-                <h3 class="card-title alert-primary py-3 px-3 rounded-2">@item.AutorFirstName @item.AutorLastName</h3>
-            </a>
-            <div class="card-title"> <h3>@item.Question.Title </h3></div>
-            <br /> <br />
-           
-            <div class="d-flex justify-content-between align-items-start flex-row mt-3">
-                <small class="alert-secondary">@item.Question.CreatedDate</small>
-                    @foreach (var questionTag in item.Tags)
+                    @for (int i = 1; i <= ViewBag.lastPage; i++)
                     {
-                        <a asp-action="Show" asp-controller="Tags" asp-route-id="@questionTag.Id" class="btn btn-outline-info border rounded-pill text-black px-3 mb-3 animated slideInRight" style="font-weight:bold;">#@questionTag.Name</a>
+                        <li class="page-item"> <a class="page-link" href="@ViewBag.PaginationBaseUrl=@i">@(i)</a> </li>
                     }
-                <div class="d-flex flex-row justify-content-end">
-                    <a class="btn btn-outline-primary px-3 rounded-pill mb-3" href="/Questions/Show/@item.Question.Id">See question</a>
-                </div>
-            </div>
 
+                    <li class="page-item">
+                        <a class="page-link" href="@ViewBag.PaginationBaseUrl=@(ViewBag.lastPage)" aria-label="Next">
+                            <span aria-hidden="true">&raquo;</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
         </div>
-
+    </div>
     </div>
 
-    <br />
-    <br />
-
-}
-@*
-@foreach (var item in ViewBag.Questions)
-{
-    <div class="card ">
-
-        <div class="card-body">
-
-            <div class="card-title"><h3>@item.Title</h3></div>
-            <br /> <br />
+       
 
 
-            <div class="d-flex justify-content-between align-items-start flex-row mt-3">
-                <small class="alert-secondary">@item.CreatedDate</small>
-
-                <div class="d-flex flex-row justify-content-end">
-                    <a class="btn btn-outline-primary px-3 rounded-pill mb-3" href="/Questions/Show/@item.Id">See question</a>
-                </div>
-            </div>
-
-
-        </div>
-
-    </div>
-    <br />
-
-}
-*@
-
-@* Afisarea paginata a articolelor *@
-
-<div>
-    <nav aria-label="Page navigation example">
-        <ul class="pagination">
-            <li class="page-item">
-                <a class="page-link" href="@ViewBag.PaginationBaseUrl=1" aria-label="Previous">
-                    <span aria-hidden="true">&laquo;</span>
-                </a>
-            </li>
-
-            @for (int i = 1; i <= ViewBag.lastPage; i++)
-            {
-                <li class="page-item"> <a class="page-link" href="@ViewBag.PaginationBaseUrl=@i">@(i)</a> </li>
-            }
-
-            <li class="page-item">
-                <a class="page-link" href="@ViewBag.PaginationBaseUrl=@(ViewBag.lastPage)" aria-label="Next">
-                    <span aria-hidden="true">&raquo;</span>
-                </a>
-            </li>
-        </ul>
-    </nav>
-</div>
-
+   
 </div>

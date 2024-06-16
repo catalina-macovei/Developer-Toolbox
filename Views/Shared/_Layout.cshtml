@@ -21,43 +21,33 @@
     <header>
         <nav class="pb-3 navbar navbar-expand-sm navbar-toggleable-sm navbar-light box-shadow bg-primary " style="padding-top:25px!important;" >
             <div class="container-fluid">
-                <a class="navbar-brand text-white" style="font-weight:bold;" asp-area="" asp-controller="Home" asp-action="Index">Developer Toolbox</a>
+                <a class="navbar-brand text-white" style="font-weight:bold; font-size:x-large;" asp-area="" asp-controller="Home" asp-action="Index">Developer Tools</a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
                         aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
                     <ul class="navbar-nav flex-grow-1">
+                        <li class="nav-item"></li>
                         <li class="nav-item">
-                            <a class="nav-link text-white" style="font-weight:bold;" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+                            <a class="nav-link text-white" style="font-weight:bold;" href="/ApplicationUsers/Show/@UserManager.GetUserId(User)">My Account</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-white" style="font-weight:bold;" asp-area="" asp-controller="Tags" asp-action="Index">Tags</a>
+                            <a class="nav-link text-white" style="font-weight:bold;" asp-area="" asp-controller="Solutions" asp-action="Index">Submissions</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-white" style="font-weight:bold;" asp-area="" asp-controller="Solutions" asp-action="Index">Solutions</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-white" style="font-weight:bold;" asp-area="" asp-controller="ApplicationUsers" asp-action="Index">Users</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-white" style="font-weight:bold;" href="/ApplicationUsers/Show/@UserManager.GetUserId(User)">My Profile</a>
+                            <a class="nav-link text-white" style="font-weight:bold;" asp-area="" asp-controller="ApplicationUsers" asp-action="Index">Community</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link text-white" style="font-weight:bold;" asp-area="" asp-controller="Categories" asp-action="Index">Practice</a>
                         </li>
 
                         <li class="nav-item">
-                            <a class="nav-link text-white" style="font-weight:bold;" asp-area="" asp-controller="Questions" asp-action="Index">Questions</a>
+                            <a class="nav-link text-white" style="font-weight:bold;" asp-area="" asp-controller="Tags" asp-action="Index">Tags</a>
                         </li>
-                        
-                        @*Se adauga sectiune "Saved" doar daca utilizatorul este logat, astfel nu detine o astfel de sectiune*@
-                        @if (User.Identity.IsAuthenticated)
-                        {
-                            <li class="nav-item">
-                                <a class="nav-link text-white" style="font-weight:bold;" asp-area="" asp-controller="Bookmarks" asp-action="Show">Saved</a>
-                            </li>
-                        }
+                        <li class="nav-item">
+                            <a class="nav-link text-white" style="font-weight:bold;" asp-area="" asp-controller="Questions" asp-action="Index">Ask</a>
+                        </li>
                     </ul>
                     <partial name="_LoginPartial" />
                 </div>
