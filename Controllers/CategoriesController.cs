@@ -30,7 +30,7 @@ namespace Developer_Toolbox.Controllers
         //Conditii de afisare a butoanelor de editare si stergere
         private void SetAccessRights()
         {
-            ViewBag.IsModerator = User.IsInRole("Editor");
+            ViewBag.IsModerator = User.IsInRole("Moderator");
 
             ViewBag.IsAdmin = User.IsInRole("Admin");
 
@@ -82,7 +82,7 @@ namespace Developer_Toolbox.Controllers
             return View(category);
         }
 
-        [Authorize(Roles = "Admin,Editor")]
+        [Authorize(Roles = "Admin,Moderator")]
         public ActionResult New()
         {
             //transmitem mesajele primite in view
@@ -98,7 +98,7 @@ namespace Developer_Toolbox.Controllers
             return View(cat);
         }
 
-        [Authorize(Roles = "Admin,Editor")]
+        [Authorize(Roles = "Admin,Moderator")]
         [HttpPost]
         public async Task<IActionResult> New(Category cat, IFormFile file)
         {
@@ -148,7 +148,7 @@ namespace Developer_Toolbox.Controllers
             }
         }
 
-        [Authorize(Roles = "Admin,Editor")]
+        [Authorize(Roles = "Admin,Moderator")]
         public ActionResult Edit(int id)
         {
             //transmitem mesajele primite in view
@@ -174,7 +174,7 @@ namespace Developer_Toolbox.Controllers
             }
         }
 
-        [Authorize(Roles = "Admin,Editor")]
+        [Authorize(Roles = "Admin,Moderator")]
         [HttpPost]
         public async Task<IActionResult> Edit(int id, Category requestCategory, IFormFile file)
         {
@@ -228,7 +228,7 @@ namespace Developer_Toolbox.Controllers
             }
         }
 
-        [Authorize(Roles = "Admin,Editor")]
+        [Authorize(Roles = "Admin,Moderator")]
         [HttpPost]
         public ActionResult Delete(int id)
         {

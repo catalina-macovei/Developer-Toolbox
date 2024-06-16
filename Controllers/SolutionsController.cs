@@ -1,5 +1,6 @@
 ﻿using Developer_Toolbox.Data;
 using Developer_Toolbox.Models;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -8,15 +9,26 @@ namespace Developer_Toolbox.Controllers
 {
     public class SolutionsController : Controller
     {
+        private readonly UserManager<ApplicationUser> _userManager;
+        private readonly RoleManager<IdentityRole> _roleManager;
         private readonly ApplicationDbContext db;
-        public SolutionsController(ApplicationDbContext context)
+        public SolutionsController(ApplicationDbContext context, UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager)
         {
+            _userManager = userManager;
+            _roleManager = roleManager;
             db = context;
         }
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            var solutions = db.Solutions.Include("Exercise")
-                                        .OrderBy(s => s.Score);
+            // Get the current user's ID
+            var userId = _userManager.GetUserId(User);
+
+            // Retrieve solutions for the current user
+            var solutions = db.Solutions.Include(s => s.Exercise)
+                                                    .Include(s => s.User)
+                                                    .Where(s => s.UserId == userId)
+                                                    .OrderBy(s => s.Score)
+                                                    .ToList();
 
             ViewBag.Solutions = solutions;
 
@@ -29,7 +41,8 @@ namespace Developer_Toolbox.Controllers
             return View();
         }
 
-        public ActionResult New()
+
+    public ActionResult New()
         {
             // Retrieve the list of exercises
             var exercises = db.Exercises.ToList();
