@@ -1,5 +1,6 @@
 ﻿using Developer_Toolbox.Data;
 using Developer_Toolbox.Models;
+using Developer_Toolbox.Repositories;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
@@ -11,13 +12,17 @@ namespace Developer_Toolbox.Controllers
 
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly RoleManager<IdentityRole> _roleManager;
+        private readonly IAnswerRepository _answerRepository;
+
         public AnswersController(ApplicationDbContext context,
             UserManager<ApplicationUser> userManager,
-            RoleManager<IdentityRole> roleManager)
+            RoleManager<IdentityRole> roleManager,
+            IAnswerRepository answerRepository)
         {
             db = context;
             _userManager = userManager;
             _roleManager = roleManager;
+            _answerRepository = answerRepository;
         }
 
         private void SetAccessRights()
@@ -101,5 +106,30 @@ namespace Developer_Toolbox.Controllers
             }
 
         }
+
+        // Noua metodă GetAllAnswers
+        public IActionResult GetAllAnswers()
+        {
+            var answers = _answerRepository.GetAllAnswers();
+            return View(answers);
+        }
+
+        // Noua metodă GetAnswerById
+        public IActionResult GetAnswerById(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var answer = _answerRepository.GetAnswerById(id);
+            if (answer == null)
+            {
+                return NotFound();
+            }
+
+            return View(answer);
+        }
+
     }
 }
