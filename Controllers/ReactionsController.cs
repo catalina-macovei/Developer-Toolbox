@@ -1,5 +1,6 @@
 ﻿using Developer_Toolbox.Data;
 using Developer_Toolbox.Models;
+using Developer_Toolbox.Repositories;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
@@ -7,18 +8,22 @@ namespace Developer_Toolbox.Controllers
 {
     public class ReactionsController : Controller
     {
-        
+
         private readonly ApplicationDbContext db;
+
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly RoleManager<IdentityRole> _roleManager;
+        private readonly IReactionRepository _reactionRepository;
 
         public ReactionsController(ApplicationDbContext context,
             UserManager<ApplicationUser> userManager,
-            RoleManager<IdentityRole> roleManager)
+            RoleManager<IdentityRole> roleManager,
+            IReactionRepository reactionRepository)
         {
             db = context;
             _userManager = userManager;
             _roleManager = roleManager;
+            _reactionRepository = reactionRepository;
         }
 
         private void SetAccessRights()
@@ -165,6 +170,30 @@ namespace Developer_Toolbox.Controllers
             // Tratam cazul în care întrebarea nu există sau alte erori
             return NotFound();
         }
-        
+
+        // Adăugăm metode pentru a utiliza repository-ul
+
+        public IActionResult GetAllReactions()
+        {
+            var reactions = _reactionRepository.GetAllReactions();
+            return View(reactions);
+        }
+
+        public IActionResult GetReactionById(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var reaction = _reactionRepository.GetReactionById(id.Value);
+            if (reaction == null)
+            {
+                return NotFound();
+            }
+
+            return View(reaction);
+        }
+
     }
 }

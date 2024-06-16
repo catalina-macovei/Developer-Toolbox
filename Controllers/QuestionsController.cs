@@ -1,5 +1,6 @@
 ﻿using Developer_Toolbox.Data;
 using Developer_Toolbox.Models;
+using Developer_Toolbox.Repositories;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -15,14 +16,17 @@ namespace Developer_Toolbox.Controllers
         private readonly ApplicationDbContext db;
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly RoleManager<IdentityRole> _roleManager;
+        private readonly IQuestionRepository _questionRepository;
 
         public QuestionsController(ApplicationDbContext context,
             UserManager<ApplicationUser> userManager,
-            RoleManager<IdentityRole> roleManager)
+            RoleManager<IdentityRole> roleManager,
+            IQuestionRepository questionRepository)
         {
             db = context;
             _userManager = userManager;
             _roleManager = roleManager;
+            _questionRepository = questionRepository;
         }
 
         private void SetAccessRights()
@@ -39,7 +43,7 @@ namespace Developer_Toolbox.Controllers
         {
             SetAccessRights();
             var questions = db.Questions.Include("User");
-            
+
             //ne definim o variabila care va stoca intrebarile impreuna cu informatiile asociate acestora necesare viw-ului
             var questionsWithAutor = from question in db.Questions.Include("User")
                                         .Select(qst => new
@@ -48,13 +52,12 @@ namespace Developer_Toolbox.Controllers
                                             AutorFirstName = db.ApplicationUsers.FirstOrDefault(user => user.Id == qst.UserId).FirstName,
                                             AutorLastName = db.ApplicationUsers.FirstOrDefault(user => user.Id == qst.UserId).LastName,
                                             AutorId = db.ApplicationUsers.FirstOrDefault(user => user.Id == qst.UserId).Id,
-                                            Tags = qst.QuestionTags.Select(qt => qt.Tag)
                                         })
-                                 orderby question.Question.CreatedDate descending
-                                 select question;
+                                     orderby question.Question.CreatedDate descending
+                                     select question;
             ViewBag.QuestionsWithAutor = questionsWithAutor;
             ViewBag.Questions = questions;
-            
+
 
             // MOTOR DE CAUTARE
 
@@ -68,7 +71,7 @@ namespace Developer_Toolbox.Controllers
                 questions = db.Questions
                     .Where(q => q.Title.Contains(search) || q.Description.Contains(search))
                     .Include("User");
-                
+
                 questionsWithAutor = from question in questions
                                 .Select(qst => new
                                 {
@@ -77,10 +80,9 @@ namespace Developer_Toolbox.Controllers
                                     AutorLastName = db.ApplicationUsers.FirstOrDefault(user => user.Id == qst.UserId).LastName,
                                     //AutorUserName = db.ApplicationUsers.FirstOrDefault(user => user.Id == qst.UserId).UserName,
                                     AutorId = db.ApplicationUsers.FirstOrDefault(user => user.Id == qst.UserId).Id,
-                                    Tags = qst.QuestionTags.Select(qt => qt.Tag)
                                 })
-                                orderby question.Question.CreatedDate descending
-                                select question;
+                                     orderby question.Question.CreatedDate descending
+                                     select question;
             }
 
             ViewBag.Questions = questions;
@@ -154,7 +156,7 @@ namespace Developer_Toolbox.Controllers
                 if (db.ApplicationUsers.FirstOrDefault(user => user.Id == _userManager.GetUserId(User)).FirstName != null)
                     userProfilComplet = true;
             }
-            
+
             ViewBag.UserProfilComplet = userProfilComplet;
 
 
@@ -182,7 +184,7 @@ namespace Developer_Toolbox.Controllers
                                             Answer = answ,
                                             AutorFirstName = db.ApplicationUsers.FirstOrDefault(user => user.Id == answ.UserId).FirstName,
                                             AutorLastName = db.ApplicationUsers.FirstOrDefault(user => user.Id == answ.UserId).LastName,
-                                            AutorId = db.ApplicationUsers.FirstOrDefault(user => user.Id == answ.UserId).Id 
+                                            AutorId = db.ApplicationUsers.FirstOrDefault(user => user.Id == answ.UserId).Id
                                         })
                                         .ToList();
             ViewBag.QuestionWithAnswers = questionWithAnswers;
@@ -212,7 +214,7 @@ namespace Developer_Toolbox.Controllers
                     else
                         disliked = true;
                 }
-                    
+
             }
             ViewBag.Disliked = disliked;
             ViewBag.Liked = liked;
@@ -237,12 +239,12 @@ namespace Developer_Toolbox.Controllers
                 // Dacă utilizatorul nu este autentificat, direcționează-l către pagina de înregistrare
                 return Redirect("/Identity/Account/Login");
             }
-            
+
             ApplicationUser user = db.ApplicationUsers.Where(user => user.Id == _userManager.GetUserId(User)).FirstOrDefault();
-            
+
             if (user == null)
                 return Redirect("/ApplicationUser/New");
-            
+
             Console.BackgroundColor = ConsoleColor.Green;
             return View();
         }
@@ -271,9 +273,9 @@ namespace Developer_Toolbox.Controllers
             }
             catch (Exception)
             {
-                if(question.Description == null)
+                if (question.Description == null)
                     TempData["message"] = "The description field is required!";
-                if(question.Title == null)
+                if (question.Title == null)
                     TempData["message"] = "The title field is required!";
                 if (question.Title.Length > 100)
                     TempData["message"] = "The title cannot exceed 100 characters";
@@ -309,6 +311,9 @@ namespace Developer_Toolbox.Controllers
                 TempData["messageType"] = "alert-primary";
 
                 return Redirect("/Questions/Index");
+
+
+
             }
             else
             {
@@ -332,6 +337,30 @@ namespace Developer_Toolbox.Controllers
             db.SaveChanges();
 
             return RedirectToAction("Index");
+        }
+
+        // Noua metodă GetAllQuestions
+        public IActionResult GetAllQuestions()
+        {
+            var questions = _questionRepository.GetAllQuestions();
+            return View(questions);
+        }
+
+        // Noua metodă GetQuestionById
+        public IActionResult GetQuestionById(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var question = _questionRepository.GetQuestionById(id);
+            if (question == null)
+            {
+                return NotFound();
+            }
+
+            return View(question);
         }
 
     }

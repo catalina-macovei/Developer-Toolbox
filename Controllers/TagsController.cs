@@ -1,5 +1,6 @@
 ﻿using Developer_Toolbox.Data;
 using Developer_Toolbox.Models;
+using Developer_Toolbox.Repositories;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -11,9 +12,19 @@ namespace Developer_Toolbox.Controllers
     {
         private readonly ApplicationDbContext db;
 
-        public TagsController(ApplicationDbContext context)
+        private readonly UserManager<ApplicationUser> _userManager;
+        private readonly RoleManager<IdentityRole> _roleManager;
+        private readonly ITagRepository _tagRepository;
+
+        public TagsController(ApplicationDbContext context,
+            UserManager<ApplicationUser> userManager,
+            RoleManager<IdentityRole> roleManager,
+            ITagRepository tagRepository)
         {
             db = context;
+            _userManager = userManager;
+            _roleManager = roleManager;
+            _tagRepository = tagRepository;
         }
         public IActionResult Index()
         {
@@ -115,6 +126,31 @@ namespace Developer_Toolbox.Controllers
 
             TempData["message"] = "The tag has been deleted";
             return RedirectToAction("Index");
+        }
+
+
+        // Noua metoda GetAllTags
+        public IActionResult GetAllTags()
+        {
+            var tags = _tagRepository.GetAllTags();
+            return View(tags);
+        }
+
+        // Noua metoda GetTagById
+        public IActionResult GetTagById(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var tag = _tagRepository.GetTagById(id);
+            if (tag == null)
+            {
+                return NotFound();
+            }
+
+            return View(tag);
         }
     }
 }
