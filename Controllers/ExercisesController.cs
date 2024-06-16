@@ -49,10 +49,6 @@ namespace Developer_Toolbox.Controllers
             // verificam daca are profilul complet
             bool completeProfile = false;
 
-            // bool userConectat = false;
-            //if (db.ApplicationUsers.Find(_userManager.GetUserId(User)).FirstName != null)
-            //    userProfilComplet = true;
-
             if (_userManager.GetUserId(User) != null)
             {
                 // userConectat = true;
@@ -207,8 +203,6 @@ namespace Developer_Toolbox.Controllers
         [Authorize(Roles = "User,Editor,Admin")]
         public IActionResult Show(string id, string x)
         {
-            // TODO: in view preia codul din editor pentru SolutionCode
-            // TODO: calculeaza scorul in functie de rezultatele testarii
             Solution solution = new Solution();
             solution.SolutionCode = x;
             solution.ExerciseId = int.Parse(id);
@@ -219,12 +213,9 @@ namespace Developer_Toolbox.Controllers
                 db.Solutions.Add(solution);
                 db.SaveChanges();
 
-                // recalculam reputation points in functie de scor
-
                 TempData["message"] = "Your solution has been submitted";
                 TempData["messageType"] = "alert-success";
 
-                // TODO: depinde unde afisam rezultatele testarii
                 return Redirect("/Solutions/Show/" + solution.Id);
             }
             else
