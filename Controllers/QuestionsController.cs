@@ -81,6 +81,7 @@ namespace Developer_Toolbox.Controllers
                                     AutorLastName = db.ApplicationUsers.FirstOrDefault(user => user.Id == qst.UserId).LastName,
                                     //AutorUserName = db.ApplicationUsers.FirstOrDefault(user => user.Id == qst.UserId).UserName,
                                     AutorId = db.ApplicationUsers.FirstOrDefault(user => user.Id == qst.UserId).Id,
+                                    //Adaugare tags
                                     Tags = db.QuestionTags.Where(qt => qt.QuestionId == qst.Id).Select(qt => qt.Tag).ToList()
                                 })
                                      orderby question.Question.CreatedDate descending
