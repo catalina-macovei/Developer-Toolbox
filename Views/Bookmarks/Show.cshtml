@@ -1,40 +1,41 @@
 ﻿@{
     ViewBag.Title = "Show";
 }
-<br />
-<br />
-<h1 class="gray-dark" style="">Bookmarks:</h1>
-<br />
+<section class="p-3 " style="color:#595959">
+    <h1 class="gray-dark" style="">Bookmarks:</h1>
+    <br />
 
-@if (TempData["message"] != null)
-{
-    <div class="alert p-3 rounded-3 text-center mb-5 @ViewBag.Alert">
-        @ViewBag.Message
-    </div>
-}
+    @if (TempData["message"] != null)
+    {
+        <div class="alert p-3 rounded-3 text-center mb-5 @ViewBag.Alert">
+            @ViewBag.Message
+        </div>
+    }
 
-@foreach (var item in ViewBag.Questions)
-{
-    <div class="card ">
+    @foreach (var item in ViewBag.Questions)
+    {
+        <div class="card ">
 
-        <div class="card-body">
+            <div class="card-body">
 
-            <div class="card-title"><h3>@item.Title</h3></div>
-            <br />
+                <div class="card-title"><h3>@item.Title</h3></div>
+                <br />
 
-            <div class="d-flex justify-content-between align-items-start flex-row mt-3">
-                <small class="alert-secondary">@item.CreatedDate</small>
+                <div class="d-flex justify-content-between align-items-start flex-row mt-3">
+                    <small class="alert-secondary">@item.CreatedDate</small>
 
-                <div class="d-flex flex-row justify-content-end">
-                    <a class="btn btn-outline-primary px-3 rounded-pill mb-3" href="/Questions/Show/@item.Id">See question</a>
+                    <div class="d-flex flex-row justify-content-end">
+                        <a class="btn btn-outline-primary px-3 rounded-pill mb-3" href="/Questions/Show/@item.Id">See question</a>
+                    </div>
                 </div>
+
             </div>
 
         </div>
 
-    </div>
+        <br />
+        <br />
 
-    <br />
-    <br />
+    }
+</section>
 
-}
