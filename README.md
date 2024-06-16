@@ -173,7 +173,7 @@ Din backend server app:
    - **SeedData**: Deși nu este un exemplu clasic al Builder Pattern, codul din `SeedData` pentru crearea și configurarea utilizatorilor poate fi văzut ca o formă simplificată a acestui pattern, unde obiectele complexe sunt construite pas cu pas.
 
   
-     ##AI Tools
+  ## AI Tools
      Pe parcursul dezvoltării proiectului, am utilizat instrumente AI precum ChatGPT și Microsoft Copilot. Am folosit în principal ChatGPT pentru a cere explicații și îndrumări în situații care ne depășeau cunoștințele, precum și pentru a ne ajuta să generăm teste mai rapid.
 
 
