@@ -53,8 +53,14 @@
                 </div>
 
                 <br />
-
-                <button class="btn btn-primary px-3 rounded-pill mb-3" type="submit">Post</button>
+                <div>
+                        @foreach (var tag in ViewBag.Tags)
+                        {
+                            <input type="checkbox" name="TagIds" value="@tag.Id" id="tag-@tag.Id" />
+                            <label for="tag-@tag.Id">@tag.Name</label>
+                        }
+                </div>
+                <button class="btn btn-primary px-3 rounded-pill mb-3" type="submit">Submit</button>
 
             </div>
 
