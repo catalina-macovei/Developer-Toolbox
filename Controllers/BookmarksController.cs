@@ -1,5 +1,6 @@
 ﻿using Developer_Toolbox.Data;
 using Developer_Toolbox.Models;
+using Developer_Toolbox.Repositories;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -14,13 +15,17 @@ namespace Developer_Toolbox.Controllers
 
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly RoleManager<IdentityRole> _roleManager;
+        private readonly IBookmarkRepository _bookmarkRepository;
+
         public BookmarksController(ApplicationDbContext context,
             UserManager<ApplicationUser> userManager,
-            RoleManager<IdentityRole> roleManager)
+            RoleManager<IdentityRole> roleManager,
+            IBookmarkRepository bookmarkRepository)
         {
             db = context;
             _userManager = userManager;
             _roleManager = roleManager;
+            _bookmarkRepository = bookmarkRepository;
         }
 
         private void SetAccessRights()
@@ -85,6 +90,31 @@ namespace Developer_Toolbox.Controllers
             TempData["message"] = "You have removed the question from the saved questions list.";
             TempData["messageType"] = "alert-primary";
             return Redirect("/Questions/Show/" + questionId);
+        }
+
+
+        // Noua metoda GetAllBookmarks
+        public IActionResult GetAllBookmarks()
+        {
+            var bookmarks = _bookmarkRepository.GetAllBookmarks();
+            return View(bookmarks);
+        }
+
+        // Noua metoda GetBookmarkById
+        public IActionResult GetBookmarkById(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var bookmark = _bookmarkRepository.GetBookmarkById(id);
+            if (bookmark == null)
+            {
+                return NotFound();
+            }
+
+            return View(bookmark);
         }
 
     }
