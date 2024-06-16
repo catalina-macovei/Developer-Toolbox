@@ -108,7 +108,7 @@ namespace Developer_Toolbox.Controllers
             return View();
         }
 
-        // formularul in care se vor completa datele unei profil nou
+        // formularul in care se vor completa datele unei profil nouu
         public IActionResult New()
         {
             ApplicationUser user = new ApplicationUser();
