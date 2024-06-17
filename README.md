@@ -1,5 +1,37 @@
 ﻿# Developer-Toolbox :rocket:
 ***
+
+## Membrii echipei
+
+* Ciurescu Irina Alexandra
+
+* Macovei Cătălina
+
+* Stoinea Maria Miruna
+
+* Toma Alexandra
+
+## Instalare
+
+* Clonare repository Developer Tools: https://github.com/catalina-macovei/Developer-Toolbox.git
+
+* Clonare repository Backend Server pentru compilarea fișierelor python/ C++: https://github.com/catalina-macovei/backend-server.git
+
+* Pentru server backend, se va porni serverul din terminal conform comenzilor indicate in Readme backend server.
+
+* Pentru aplicația în .Net, se va rula cu build in Visual Studio. 
+
+
+## Link-uri proiect
+
+Demo: https://youtu.be/wtL93HdD8FU?si=qewP8Ewvj1DEg7ne
+
+Trello Board: https://trello.com/invite/b/IkGNAbWn/ATTI8ac6152930936af6fce51826c086cd64D571E03D/proiect-mds-stack-overflow-developers-tool
+
+Backend Server repository: https://github.com/catalina-macovei/backend-server
+
+Repository pentru testele automate: https://github.com/stoineamiruna/Developer-ToolboxTests
+
 ## User stories:
 * As an unregistred user, I want to see others' questions and answers.
 * As user, I want to login.
@@ -21,7 +53,7 @@
 * As an administrator, I want the capability to delete user accounts.
 
 ## Backlog creation:
-Trello Board: https://trello.com/invite/b/IkGNAbWn/ATTI8ac6152930936af6fce51826c086cd64D571E03D/proiect-mds-stack-overflow-developers-tool
+
 <p align="center">
   <img src="wwwroot\imgs\Wiki\Backlog.png" alt="Workflow Diagram">
 </p>
