@@ -28,7 +28,7 @@ Trello Board: https://trello.com/invite/b/IkGNAbWn/ATTI8ac6152930936af6fce51826c
 
 ## UML Diagram:
 <p align="center">
-  <img src="wwwroot\imgs\Wiki\UML.png" alt="UML">
+  <img src="wwwroot\imgs\Wiki\UML.jpg" alt="UML">
 </p>
 
 ## Gantt Chart:
@@ -95,26 +95,26 @@ Trello Board: https://trello.com/invite/b/IkGNAbWn/ATTI8ac6152930936af6fce51826c
 	Ca parte a procesului de dezvoltare, am realizat testarea automată, folosind cadrul de testare xUnit, care este un instrument popular pentru testarea unităților în aplicațiile .NET. In plus, am folosit biblioteca Moq pentru a simula dependențele, lucru a permis testarea componentelor în izolare, fără a se baza pe servicii sau baze de date externe.
 	
 	<p align="center">
-		<img src="wwwroot\imgs\Wiki\Testare4.jpeg" alt="Testare">
+		<img src="wwwroot\imgs\Wiki\Testare4.png" alt="Testare">
 	</p>
 - Realizarea și verificarea testelor create
 
 	Aplicarea Design Pattern-ului Repository
 
 	<p align="center">	
-		<img src="wwwroot\imgs\Wiki\Testare2.jpeg" alt="Testare">
+		<img src="wwwroot\imgs\Wiki\Testare2.png" alt="Testare">
 	</p>
 	
 	Crearea efectivă a testelor
 
 	<p align="center">	
-		<img src="wwwroot\imgs\Wiki\Testare3.jpeg" alt="Testare">
+		<img src="wwwroot\imgs\Wiki\Testare3.png" alt="Testare">
 	</p>
 	
 	Verificarea și rularea testelor
 	
 	<p align="center">
-	<img src="wwwroot\imgs\Wiki\Testare1.jpeg" alt="Testare">
+	<img src="wwwroot\imgs\Wiki\Testare1.png" alt="Testare">
 	</p>
 	
 ## Raportare bug si rezolvare cu pull request
