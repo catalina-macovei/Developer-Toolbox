@@ -1,5 +1,6 @@
 ﻿using Developer_Toolbox.Data;
 using Developer_Toolbox.Models;
+using Developer_Toolbox.Repositories;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -12,11 +13,13 @@ namespace Developer_Toolbox.Controllers
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly RoleManager<IdentityRole> _roleManager;
         private readonly ApplicationDbContext db;
-        public SolutionsController(ApplicationDbContext context, UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager)
+        private readonly ISolutionRepository _solutionRepository;
+        public SolutionsController(ApplicationDbContext context, UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager, ISolutionRepository solutionRepository)
         {
             _userManager = userManager;
             _roleManager = roleManager;
             db = context;
+            _solutionRepository = solutionRepository;
         }
         public async Task<IActionResult> Index()
         {
@@ -91,5 +94,28 @@ namespace Developer_Toolbox.Controllers
 
             return RedirectToAction("Index");
         }
+
+        public IActionResult GetAllSolutions()
+        {
+            var solutions = _solutionRepository.GetAllSolutions();
+            return View(solutions);
+        }
+        public IActionResult GetSolutionById(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var solution = _solutionRepository.GetSolutionById(id);
+            if (solution == null)
+            {
+                return NotFound();
+            }
+
+            return View(solution);
+        }
+
     }
 }
+
