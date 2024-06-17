@@ -90,7 +90,7 @@ Trello Board: https://trello.com/invite/b/IkGNAbWn/ATTI8ac6152930936af6fce51826c
 
 ## Teste Automate
 
-- Pachetele xUnit si Moq
+- Pachetele xUnit și Moq
 
 	Ca parte a procesului de dezvoltare, am realizat testarea automată, folosind cadrul de testare xUnit, care este un instrument popular pentru testarea unităților în aplicațiile .NET. In plus, am folosit biblioteca Moq pentru a simula dependențele, lucru a permis testarea componentelor în izolare, fără a se baza pe servicii sau baze de date externe.
 	
